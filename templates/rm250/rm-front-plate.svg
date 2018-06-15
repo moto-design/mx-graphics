@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="320mm" height="320mm" viewBox="0 0 320.00001 320.00001" version="1.1" id="svg1161" inkscape:version="0.92.3 (2405546, 2018-03-11)" sodipodi:docname="rm-front-plate.svg">
+  <defs id="defs1155"/>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="0.35" inkscape:cx="-65.142903" inkscape:cy="608.57143" inkscape:document-units="mm" inkscape:current-layer="layer2" showgrid="false" inkscape:pagecheckerboard="true" gridtolerance="1" guidetolerance="1" inkscape:window-width="1215" inkscape:window-height="963" inkscape:window-x="542" inkscape:window-y="44" inkscape:window-maximized="0" units="mm" objecttolerance="1"/>
+  <metadata id="metadata1158">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title>@@title@@</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>x3300 &lt;x3300x@gmail.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:description>
+Fabricators Design License draft v10.11.20
+
+Copyright x3300 &lt;x3300x@gmail.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this design and associated documentation (the _Design_), to
+deal in the Design without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Design, and to permit persons to
+whom the Design is furnished to do so, subject to the following
+conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Design.
+
+ If you modify the Design including creating additional or alternate
+ documentation formats (images, drawings, text documents, etc.), you
+ may copy and distribute your modified version of the Design in any
+ form provided that you also do one of the following:
+
+  Accompany the modified version of the Design with documentation
+  which corresponds to and completely describes the modified version
+  of the Design; or,
+
+  Accompany the modified version of the Design with a written offer
+  for documentation which corresponds to and completely describes the
+  modified version of the Design.
+
+THE DESIGN IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+DESIGN OR THE USE OR OTHER DEALINGS IN THE DESIGN.
+        </dc:description>
+        <dc:date>@@date@@</dc:date>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>All Rights Reserved</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>@@publisher@@</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:identifier>@@identifier@@</dc:identifier>
+        <dc:source>@@source@@</dc:source>
+        <dc:relation>@@relation@@</dc:relation>
+        <dc:language>@@language@@</dc:language>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>@@keywords@@</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:coverage>@@coverage@@</dc:coverage>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>@@contributors@@</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <cc:license rdf:resource="Fabricators Design License"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:groupmode="layer" id="layer2" inkscape:label="print" transform="translate(0,23.000012)" style="display:inline">
+    <path sodipodi:nodetypes="ssssssscssssssscs" inkscape:connector-curvature="0" id="path4544" d="m 263.52883,27.095381 c 4.61502,0.20948 9.1502,2.56963 11.27343,6.33671 16.89102,29.968631 19.89634,34.304689 36.04424,67.724059 3.38513,7.00573 2.2738,15.73044 0.77575,23.37934 -5.76521,29.4364 -9.17019,48.72467 -20.78979,82.84763 -2.58027,7.57741 -7.58912,14.6997 -15.82505,19.45663 -46.60616,26.91884 -82.37855,44.15701 -107.98282,54.91792 -2.11288,0.88803 -4.86701,1.23622 -6.7627,1.24058 -1.89567,-0.004 -4.64979,-0.35255 -6.7627,-1.24058 C 127.89496,270.99676 92.122536,253.75859 45.516421,226.83975 37.280479,222.08282 32.271618,214.96053 29.691348,207.38312 18.071738,173.26016 14.666779,153.97189 8.9015597,124.53549 c -1.49806,-7.6489 -2.60938,-16.37361 0.77574,-23.37934 C 25.825208,67.73678 28.830518,63.400722 45.721571,33.432091 c 2.123239,-3.76708 7.746798,-6.12723 12.361808,-6.33671 36.3595,-1.65041 102.450601,-1.84367 102.450601,-1.84367 0,0 66.63536,0.19326 102.99485,1.84367 z" style="display:inline;fill:#ffff00;fill-opacity:1;stroke-width:1"/>
+  </g>
+  <g inkscape:label="cut" inkscape:groupmode="layer" id="layer1" transform="translate(0,23.000012)" style="display:inline">
+    <path sodipodi:nodetypes="ssssssscssssssscs" inkscape:connector-curvature="0" id="path4808" d="m 261.6663,31.913573 c 4.4876,0.20142 8.89753,2.47064 10.96211,6.09261 16.42467,28.814165 19.34702,32.983196 35.04907,65.115177 3.29165,6.73587 2.21101,15.12448 0.75432,22.47872 -5.60604,28.30244 -8.91699,46.84767 -20.21578,79.65616 -2.50902,7.28552 -7.37957,14.13345 -15.38811,18.70713 -45.31927,25.88187 -80.104,42.45598 -105.00128,52.80237 -2.05458,0.85381 -4.73264,1.18858 -6.57597,1.19277 -1.84335,-0.004 -4.52143,-0.33896 -6.576,-1.19277 C 129.77739,266.41935 94.992667,249.84524 49.673371,223.96337 41.664841,219.38969 36.79428,212.54176 34.285252,205.25624 22.98648,172.44775 19.67553,153.90252 14.069501,125.60008 c -1.45671,-7.35424 -2.53734,-15.74285 0.75431,-22.47872 15.702049,-32.131981 18.62438,-36.301012 35.049051,-65.115177 2.06461,-3.62197 7.532898,-5.89119 12.020488,-6.09261 35.355588,-1.58683 99.62188,-1.77265 99.62188,-1.77265 0,0 64.79548,0.18582 100.15107,1.77265 z" style="display:inline;fill:none;stroke:#ff00ff;stroke-width:0.25000001pt;stroke-opacity:1"/>
+  </g>
+</svg>
