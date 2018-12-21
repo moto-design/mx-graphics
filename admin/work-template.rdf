@@ -1,0 +1,38 @@
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title>@@title@@</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>@@creator@@</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:description>@@description@@</dc:description>
+        <dc:date>@@date@@</dc:date>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>@@rights@@</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>@@publisher@@</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:identifier>@@identifier@@</dc:identifier>
+        <dc:source>@@source@@</dc:source>
+        <dc:relation>@@relation@@</dc:relation>
+        <dc:language>@@language@@</dc:language>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>@@keywords@@</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:coverage>@@coverage@@</dc:coverage>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>@@contributors@@</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <cc:license rdf:resource="@@licence@@"/>
+      </cc:Work>
