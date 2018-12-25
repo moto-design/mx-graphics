@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="110mm" height="110mm" viewBox="0 0 110 110" version="1.1" id="svg4630" inkscape:version="0.92.3 (2405546, 2018-03-11)" sodipodi:docname="yin-yang-outline.svg">
+  <defs id="defs14"/>
+  <sodipodi:namedview pagecolor="#ffffff" bordercolor="#666666" borderopacity="1" objecttolerance="10" gridtolerance="10" guidetolerance="10" inkscape:pageopacity="0" inkscape:pageshadow="2" inkscape:window-width="1920" inkscape:window-height="1043" id="namedview12" showgrid="false" inkscape:pagecheckerboard="true" inkscape:zoom="1.6063133" inkscape:cx="219.18856" inkscape:cy="204.5854" inkscape:window-x="0" inkscape:window-y="0" inkscape:window-maximized="1" inkscape:current-layer="layer1" inkscape:snap-grids="false" inkscape:snap-object-midpoints="true" inkscape:object-nodes="true" inkscape:snap-nodes="true" showguides="false" inkscape:guide-bbox="true">
+    <sodipodi:guide position="50.073257,115.79441" orientation="1,0" id="guide882" inkscape:locked="false"/>
+  </sodipodi:namedview>
+  <title id="title4675">yin-yang</title>
+  <metadata id="metadata4593">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title>@@title@@</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>x3300 &lt;x3300x@gmail.com&gt;</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:description>
+Fabricators Design License draft v10.11.20
+
+Copyright x3300 &lt;x3300x@gmail.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this design and associated documentation (the _Design_), to
+deal in the Design without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Design, and to permit persons to
+whom the Design is furnished to do so, subject to the following
+conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Design.
+
+ If you modify the Design including creating additional or alternate
+ documentation formats (images, drawings, text documents, etc.), you
+ may copy and distribute your modified version of the Design in any
+ form provided that you also do one of the following:
+
+  Accompany the modified version of the Design with documentation
+  which corresponds to and completely describes the modified version
+  of the Design; or,
+
+  Accompany the modified version of the Design with a written offer
+  for documentation which corresponds to and completely describes the
+  modified version of the Design.
+
+THE DESIGN IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+DESIGN OR THE USE OR OTHER DEALINGS IN THE DESIGN.
+        </dc:description>
+        <dc:date>@@date@@</dc:date>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>All Rights Reserved</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:publisher>
+          <cc:Agent>
+            <dc:title>@@publisher@@</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:identifier>@@identifier@@</dc:identifier>
+        <dc:source>@@source@@</dc:source>
+        <dc:relation>@@relation@@</dc:relation>
+        <dc:language>@@language@@</dc:language>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>@@keywords@@</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+        <dc:coverage>@@coverage@@</dc:coverage>
+        <dc:contributor>
+          <cc:Agent>
+            <dc:title>@@contributors@@</dc:title>
+          </cc:Agent>
+        </dc:contributor>
+        <cc:license rdf:resource="Fabricators Design License"/>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(0,-187)">
+    <g id="g880" transform="translate(136.9303,-0.00802)">
+      <path id="path853" transform="matrix(0.26458333,0,0,0.26458333,0,177)" d="m -307.66602,59.898438 c -104.4225,0.06939 -189.0625,84.709142 -189.0625,189.117182 0,103.57017 83.28973,187.67305 186.54102,189.03126 -50.89641,-1.31946 -91.74812,-43.12667 -91.74805,-94.50391 -7e-5,-52.21818 42.19971,-94.5504 94.26953,-94.53906 52.06983,0.0105 94.26765,-42.34042 94.26758,-94.58203 7e-5,-52.24158 -42.19775,-94.591852 -94.26758,-94.523442 z m -2.52148,378.148442 c 0.83307,0.0216 1.66754,0.0315 2.50586,0.0312 -0.83789,-1.2e-4 -1.67055,-0.0203 -2.50586,-0.0312 z m 2.50586,-308.32032 a 24.696136,24.696136 0 0 1 24.69726,24.69532 24.696136,24.696136 0 0 1 -24.69726,24.69726 24.696136,24.696136 0 0 1 -24.69531,-24.69726 24.696136,24.696136 0 0 1 24.69531,-24.69532 z" style="fill:#eccd62;fill-opacity:1;stroke:#ff0000;stroke-width:1.2767998;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" inkscape:connector-curvature="0"/>
+      <path inkscape:connector-curvature="0" style="fill:#009aff;fill-opacity:1;stroke:#000099;stroke-width:0.33781993;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1" d="m -81.411465,292.90788 c 27.628457,-0.0184 50.02279,-22.41263 50.02279,-50.03725 0,-27.40294 -22.037074,-49.65516 -49.35564,-50.01452 13.466338,0.3491 24.275019,11.4106 24.275,25.00416 1.9e-5,13.81606 -11.165339,25.01646 -24.94215,25.01346 -13.7768,-0.003 -24.941645,11.20257 -24.941635,25.02482 -1e-5,13.82226 11.164835,25.02743 24.941635,25.00933 z m 0.66715,-100.05177 c -0.22042,-0.006 -0.44121,-0.008 -0.66301,-0.008 0.22169,3e-5 0.442,0.005 0.66301,0.008 z m -0.66301,81.57641 a 6.5341859,6.5341859 0 0 1 -6.53449,-6.53397 6.5341859,6.5341859 0 0 1 6.53449,-6.53448 6.5341859,6.5341859 0 0 1 6.533964,6.53448 6.5341859,6.5341859 0 0 1 -6.533964,6.53397 z" id="path876"/>
+    </g>
+  </g>
+</svg>
