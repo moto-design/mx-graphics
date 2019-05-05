@@ -53,26 +53,27 @@ static void print_bugreport(void)
 	fprintf(stderr, "Report bugs at " PACKAGE_BUGREPORT ".\n");
 }
 
-struct stripe_params {
-	unsigned int node_count_min;
-	unsigned int node_count_max;
-	float radius_min;
-	float radius_max;
-	float sector_min;
+struct block_params {
+	float width;
+	float height;
 };
 
-struct grid_params {
-	unsigned int columns;
-	unsigned int rows;
-	float width;
-	float wiggle;
+struct stripe_params {
+	unsigned int block_count;
+	float top_angle;
+	float bottom_angle;
+	float block_angle;
+	struct block_params first_block;
+	struct block_params first_gap;
+	float block_multiplier;
+	float gap_multiplier;
 };
 
 enum opt_value {opt_undef = 0, opt_yes, opt_no};
 
 struct opts {
+	struct block_params block_params;
 	struct stripe_params stripe_params;
-	struct grid_params grid_params;
 	char *output_file;
 	char *config_file;
 	enum opt_value background;
@@ -81,22 +82,29 @@ struct opts {
 	enum opt_value version;
 };
 
-static const struct stripe_params init_stripe_params = {
-	.node_count_min = UINT_MAX,
-	.node_count_max = UINT_MAX,
-	.radius_min = HUGE_VALF,
-	.radius_max = HUGE_VALF,
-	.sector_min = HUGE_VALF,
-};
-
-static const struct grid_params init_grid_params = {
-	.columns = UINT_MAX,
-	.rows = UINT_MAX,
+static const struct block_params init_block_params = {
 	.width = HUGE_VALF,
-	.wiggle = HUGE_VALF,
+	.height = HUGE_VALF,
 };
 
-static const struct stripe_params default_stripe_params = {
+static const struct stripe_params init_stripe_params = {
+	.block_count = UINT_MAX,
+	.top_angle = HUGE_VALF,
+	.bottom_angle = HUGE_VALF,
+	.block_angle = HUGE_VALF,
+	.first_block = {
+		.width = HUGE_VALF,
+		.height = HUGE_VALF,
+	},
+	.first_gap = {
+		.width = HUGE_VALF,
+		.height = HUGE_VALF,
+	},
+	.block_multiplier = HUGE_VALF,
+	.gap_multiplier = HUGE_VALF,
+};
+
+static const struct block_params default_block_params = {
 	.node_count_min = 8U,
 	.node_count_max = 16U,
 	.radius_min = 18.0,
@@ -104,7 +112,7 @@ static const struct stripe_params default_stripe_params = {
 	.sector_min = 15.0,
 };
 
-static const struct grid_params default_grid_params = {
+static const struct stripe_params default_stripe_params = {
 	.columns = 15U,
 	.rows = 15U,
 };
@@ -136,16 +144,16 @@ static void print_usage(const struct opts *opts)
 "  -V --version      - Display the program version number.\n",
 		program_name, program_name,
 
-		opts->stripe_params.node_count_min,
-		opts->stripe_params.node_count_max,
-		opts->stripe_params.radius_min,
-		opts->stripe_params.radius_max,
-		opts->stripe_params.sector_min,
+		opts->block_params.node_count_min,
+		opts->block_params.node_count_max,
+		opts->block_params.radius_min,
+		opts->block_params.radius_max,
+		opts->block_params.sector_min,
 
-		opts->grid_params.columns,
-		opts->grid_params.rows,
-		opts->grid_params.width,
-		opts->grid_params.wiggle,
+		opts->stripe_params.columns,
+		opts->stripe_params.rows,
+		opts->stripe_params.width,
+		opts->stripe_params.wiggle,
 
 		opts->output_file,
 		opts->config_file,
@@ -180,8 +188,8 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 	static const char short_options[] = "bo:f:hvV";
 
 	*opts = (struct opts){
+		.block_params = init_block_params,
 		.stripe_params = init_stripe_params,
-		.grid_params = init_grid_params,
 		.output_file = "-",
 		.config_file = NULL,
 		.background = opt_no,
@@ -214,65 +222,65 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 		switch (c) {
 		// stripe
 		case '1':
-			opts->stripe_params.node_count_min = to_unsigned(optarg);
-			if (opts->stripe_params.node_count_min == UINT_MAX) {
+			opts->block_params.node_count_min = to_unsigned(optarg);
+			if (opts->block_params.node_count_min == UINT_MAX) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '2':
-			opts->stripe_params.node_count_max = to_unsigned(optarg);
-			if (opts->stripe_params.node_count_max == UINT_MAX) {
+			opts->block_params.node_count_max = to_unsigned(optarg);
+			if (opts->block_params.node_count_max == UINT_MAX) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '3':
-			opts->stripe_params.radius_min = to_float(optarg);
-			if (opts->stripe_params.radius_min == HUGE_VALF) {
+			opts->block_params.radius_min = to_float(optarg);
+			if (opts->block_params.radius_min == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '4':
-			opts->stripe_params.radius_max = to_float(optarg);
-			if (opts->stripe_params.radius_max == HUGE_VALF) {
+			opts->block_params.radius_max = to_float(optarg);
+			if (opts->block_params.radius_max == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '5':
-			opts->stripe_params.sector_min = to_float(optarg);
-			if (opts->stripe_params.sector_min == HUGE_VALF) {
+			opts->block_params.sector_min = to_float(optarg);
+			if (opts->block_params.sector_min == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		// grid
 		case '6':
-			opts->grid_params.columns = to_unsigned(optarg);
-			if (opts->grid_params.columns == UINT_MAX) {
+			opts->stripe_params.columns = to_unsigned(optarg);
+			if (opts->stripe_params.columns == UINT_MAX) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '7':
-			opts->grid_params.rows = to_unsigned(optarg);
-			if (opts->grid_params.rows == UINT_MAX) {
+			opts->stripe_params.rows = to_unsigned(optarg);
+			if (opts->stripe_params.rows == UINT_MAX) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '8':
-			opts->grid_params.width = to_float(optarg);
-			if (opts->grid_params.width == HUGE_VALF) {
+			opts->stripe_params.width = to_float(optarg);
+			if (opts->stripe_params.width == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '9':
-			opts->grid_params.wiggle = to_float(optarg);
-			if (opts->grid_params.wiggle == HUGE_VALF) {
+			opts->stripe_params.wiggle = to_float(optarg);
+			if (opts->stripe_params.wiggle == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
@@ -343,8 +351,8 @@ struct grid_position {
 	unsigned int number;
 };
 
-static void write_stripe(FILE* out_stream, const struct grid_params *grid_params,
-	const struct stripe_params *stripe_params, const char *color,
+static void write_stripe(FILE* out_stream, const struct stripe_params *stripe_params,
+	const struct block_params *block_params, const char *color,
 	const struct grid_position *pos)
 {
 	char stripe_id[256];
@@ -354,13 +362,13 @@ static void write_stripe(FILE* out_stream, const struct grid_params *grid_params
 	struct point_c stripe_offset;
 
 	snprintf(stripe_id, sizeof(stripe_id), "stripe_%d", pos->number);
-	node_count = random_int(stripe_params->node_count_min,
-		stripe_params->node_count_max);
+	node_count = random_int(block_params->node_count_min,
+		block_params->node_count_max);
 
-	stripe_offset.x = pos->column * grid_params->width
-		+ random_float(0, grid_params->wiggle);
-	stripe_offset.y = pos->row * grid_params->width +
-		random_float(0, grid_params->wiggle);
+	stripe_offset.x = pos->column * stripe_params->width
+		+ random_float(0, stripe_params->wiggle);
+	stripe_offset.y = pos->row * stripe_params->width +
+		random_float(0, stripe_params->wiggle);
 
 	log("%s: %u nodes at {%u,%u} => {%f,%f}\n",
 		stripe_id, node_count, pos->column, pos->row,
@@ -374,7 +382,7 @@ static void write_stripe(FILE* out_stream, const struct grid_params *grid_params
 		float sector_start;
 		struct point_c final;
 
-		sector_start = point_p.angle + stripe_params->sector_min;
+		sector_start = point_p.angle + block_params->sector_min;
 		
 		if (sector_start >= sector_limit) {
 			error("node_%u: bad sector: {%f,%f}\n",
@@ -383,8 +391,8 @@ static void write_stripe(FILE* out_stream, const struct grid_params *grid_params
 		}
 
 		point_p.angle = random_float(sector_start, sector_limit);
-		point_p.radius = random_float(stripe_params->radius_min,
-			stripe_params->radius_max);
+		point_p.radius = random_float(block_params->radius_min,
+			block_params->radius_max);
 
 		polar_to_cart(&point_p, &point_c);
 
@@ -424,8 +432,8 @@ static void write_background(FILE* out_stream,
 	svg_close_group(out_stream);
 }
 
-static void write_svg(FILE* out_stream, const struct grid_params *grid_params,
-	const struct stripe_params *stripe_params, const struct palette *palette,
+static void write_svg(FILE* out_stream, const struct stripe_params *stripe_params,
+	const struct block_params *block_params, const struct palette *palette,
 	bool background)
 {
 	unsigned int i;
@@ -433,11 +441,11 @@ static void write_svg(FILE* out_stream, const struct grid_params *grid_params,
 	struct grid_position pos;
 	struct svg_rect background_rect;
 
-	background_rect.width = (2 + grid_params->columns) * grid_params->width;
-	background_rect.height = (2 + grid_params->rows) * grid_params->width;
+	background_rect.width = (2 + stripe_params->columns) * stripe_params->width;
+	background_rect.height = (2 + stripe_params->rows) * stripe_params->width;
 
-	background_rect.x = -grid_params->width;
-	background_rect.y = -grid_params->width;
+	background_rect.x = -stripe_params->width;
+	background_rect.y = -stripe_params->width;
 	background_rect.rx = 50.0;
 
 	svg_open_svg(out_stream, &background_rect);
@@ -449,16 +457,16 @@ static void write_svg(FILE* out_stream, const struct grid_params *grid_params,
 
 	svg_open_group(out_stream, "camo_stripes");
 
-	render_order = random_array(grid_params->columns * grid_params->rows);
+	render_order = random_array(stripe_params->columns * stripe_params->rows);
 
-	for (i = 0; i < grid_params->columns * grid_params->rows; i++) {
+	for (i = 0; i < stripe_params->columns * stripe_params->rows; i++) {
 		pos.number = i;
-		pos.row = render_order[i] / grid_params->columns;
-		pos.column = render_order[i] % grid_params->columns;
+		pos.row = render_order[i] / stripe_params->columns;
+		pos.column = render_order[i] % stripe_params->columns;
 		const char *color = palette_get_random(palette);
 
 		//debug("%u: (%u) = %u, %u\n", i, render_order[i], pos.column, pos.row);
-		write_stripe(out_stream, grid_params, stripe_params, color, &pos);
+		write_stripe(out_stream, stripe_params, block_params, color, &pos);
 	}
 
 	svg_close_group(out_stream);
@@ -467,8 +475,8 @@ static void write_svg(FILE* out_stream, const struct grid_params *grid_params,
 
 struct config_cb_data {
 	const char *config_file;
+	struct block_params *block_params;
 	struct stripe_params *stripe_params;
-	struct grid_params *grid_params;
 	struct palette* palette;
 	struct color_data *color_data;
 	unsigned color_counter;
@@ -502,48 +510,48 @@ static void config_cb(void *cb_data, const char *section, char *config_data)
 
 		//debug("params: '%s', '%s'\n", name, value);
 
-		if (cbd->stripe_params->node_count_min ==
-			init_stripe_params.node_count_min &&
+		if (cbd->block_params->node_count_min ==
+			init_block_params.node_count_min &&
 			!strcmp(name, "stripe_node_count_min")) {
-			cbd->stripe_params->node_count_min =
+			cbd->block_params->node_count_min =
 				to_unsigned(value);
 		}
-		if (cbd->stripe_params->node_count_max ==
-			init_stripe_params.node_count_max &&
+		if (cbd->block_params->node_count_max ==
+			init_block_params.node_count_max &&
 			!strcmp(name, "stripe_node_count_max")) {
-			cbd->stripe_params->node_count_max =
+			cbd->block_params->node_count_max =
 				to_unsigned(value);
 		}
-		if (cbd->stripe_params->radius_min ==
-			init_stripe_params.radius_min &&
+		if (cbd->block_params->radius_min ==
+			init_block_params.radius_min &&
 			!strcmp(name, "stripe_radius_min")) {
-			cbd->stripe_params->radius_min = to_float(value);
+			cbd->block_params->radius_min = to_float(value);
 		}
-		if (cbd->stripe_params->radius_max ==
-			init_stripe_params.radius_max &&
+		if (cbd->block_params->radius_max ==
+			init_block_params.radius_max &&
 			!strcmp(name, "stripe_radius_max")) {
-			cbd->stripe_params->radius_max = to_float(value);
+			cbd->block_params->radius_max = to_float(value);
 		}
-		if (cbd->stripe_params->sector_min ==
-			init_stripe_params.sector_min &&
+		if (cbd->block_params->sector_min ==
+			init_block_params.sector_min &&
 			!strcmp(name, "stripe_sector_min")) {
-			cbd->stripe_params->sector_min = to_float(value);
+			cbd->block_params->sector_min = to_float(value);
 		}
-		if (cbd->grid_params->columns == init_grid_params.columns &&
+		if (cbd->stripe_params->columns == init_stripe_params.columns &&
 			!strcmp(name, "grid_columns")) {
-			cbd->grid_params->columns = to_unsigned(value);
+			cbd->stripe_params->columns = to_unsigned(value);
 		}
-		if (cbd->grid_params->rows == init_grid_params.rows &&
+		if (cbd->stripe_params->rows == init_stripe_params.rows &&
 			!strcmp(name, "grid_rows")) {
-			cbd->grid_params->rows = to_unsigned(value);
+			cbd->stripe_params->rows = to_unsigned(value);
 		}
-		if (cbd->grid_params->width == init_grid_params.width &&
+		if (cbd->stripe_params->width == init_stripe_params.width &&
 			!strcmp(name, "grid_width")) {
-			cbd->grid_params->width = to_float(value);
+			cbd->stripe_params->width = to_float(value);
 		}
-		if (cbd->grid_params->wiggle == init_grid_params.wiggle &&
+		if (cbd->stripe_params->wiggle == init_stripe_params.wiggle &&
 			!strcmp(name, "grid_wiggle")) {
-			cbd->grid_params->wiggle = to_float(value);
+			cbd->stripe_params->wiggle = to_float(value);
 		}
 
 		return;
@@ -638,8 +646,8 @@ static void get_config_opts(struct opts *opts, struct palette *palette)
 	};
 	struct config_cb_data cbd = {
 		.config_file = opts->config_file,
+		.block_params = &opts->block_params,
 		.stripe_params = &opts->stripe_params,
-		.grid_params = &opts->grid_params,
 		.palette = palette,
 	};
 
@@ -672,37 +680,37 @@ int main(int argc, char *argv[])
 			sizeof(default_colors) / sizeof(default_colors[0]));
 	}
 
-	if (opts.stripe_params.node_count_min ==
-		init_stripe_params.node_count_min) {
-		opts.stripe_params.node_count_min =
-			default_stripe_params.node_count_min;
+	if (opts.block_params.node_count_min ==
+		init_block_params.node_count_min) {
+		opts.block_params.node_count_min =
+			default_block_params.node_count_min;
 	}
-	if (opts.stripe_params.node_count_max ==
-		init_stripe_params.node_count_max) {
-		opts.stripe_params.node_count_max =
-			default_stripe_params.node_count_max;
+	if (opts.block_params.node_count_max ==
+		init_block_params.node_count_max) {
+		opts.block_params.node_count_max =
+			default_block_params.node_count_max;
 	}
-	if (opts.stripe_params.radius_min == init_stripe_params.radius_min) {
-		opts.stripe_params.radius_min = default_stripe_params.radius_min;
+	if (opts.block_params.radius_min == init_block_params.radius_min) {
+		opts.block_params.radius_min = default_block_params.radius_min;
 	}
-	if (opts.stripe_params.radius_max == init_stripe_params.radius_max) {
-		opts.stripe_params.radius_max = default_stripe_params.radius_max;
+	if (opts.block_params.radius_max == init_block_params.radius_max) {
+		opts.block_params.radius_max = default_block_params.radius_max;
 	}
-	if (opts.stripe_params.sector_min == init_stripe_params.sector_min) {
-		opts.stripe_params.sector_min = default_stripe_params.sector_min;
+	if (opts.block_params.sector_min == init_block_params.sector_min) {
+		opts.block_params.sector_min = default_block_params.sector_min;
 	}
 
-	if (opts.grid_params.columns == init_grid_params.columns) {
-		opts.grid_params.columns = default_grid_params.columns;
+	if (opts.stripe_params.columns == init_stripe_params.columns) {
+		opts.stripe_params.columns = default_stripe_params.columns;
 	}
-	if (opts.grid_params.rows == init_grid_params.rows) {
-		opts.grid_params.rows = default_grid_params.rows;
+	if (opts.stripe_params.rows == init_stripe_params.rows) {
+		opts.stripe_params.rows = default_stripe_params.rows;
 	}
-	if (opts.grid_params.width == init_grid_params.width) {
-		opts.grid_params.width = 1.1 * opts.stripe_params.radius_max;
+	if (opts.stripe_params.width == init_stripe_params.width) {
+		opts.stripe_params.width = 1.1 * opts.block_params.radius_max;
 	}
-	if (opts.grid_params.wiggle == init_grid_params.wiggle) {
-		opts.grid_params.wiggle = 0.8 * opts.stripe_params.radius_max;
+	if (opts.stripe_params.wiggle == init_stripe_params.wiggle) {
+		opts.stripe_params.wiggle = 0.8 * opts.block_params.radius_max;
 	}
 
 	if (!strcmp(opts.output_file, "-")) {
@@ -729,7 +737,7 @@ int main(int argc, char *argv[])
 
 	srand((unsigned int)time(NULL));
 
-	write_svg(out_stream, &opts.grid_params, &opts.stripe_params, &palette,
+	write_svg(out_stream, &opts.stripe_params, &opts.block_params, &palette,
 		opts.background);
 
 	mem_free(palette.colors);
