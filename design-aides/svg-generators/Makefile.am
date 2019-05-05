@@ -13,11 +13,15 @@ MAINTAINERCLEANFILES = autom4te.cache aclocal.m4 compile config.* configure \
 maintainer-clean-local:
 	rm -rf m4
 
-bin_PROGRAMS = blob-generator
+bin_PROGRAMS = blob-generator stripe-generator
 
 blob_generator_DEPENDENCIES = Makefile
 blob_generator_SOURCES = util.c util.h blob-generator.c
 blob_generator_LDADD = -lm
+
+stripe_generator_DEPENDENCIES = Makefile
+stripe_generator_SOURCES = util.c util.h stripe-generator.c
+stripe_generator_LDADD = -lm
 
 .PHONY: help
 
