@@ -338,14 +338,12 @@ struct block_params {
 ;
 };
 
-static void write_block(FILE* out_stream,
-	const struct block_params *block_params, const char *color,
-	const struct point_p *pos)
+static void write_block(FILE* out_stream, const struct block_params *block,
+	const char *color)
 {
 	(void)out_stream;
-	(void)block_params;
+	(void)block;
 	(void)color;
-	(void)pos;
 }
 
 static void write_svg(FILE* out_stream, const struct stripe_params *stripe_params,
@@ -381,8 +379,9 @@ static void write_svg(FILE* out_stream, const struct stripe_params *stripe_param
 		block.top_left.radius = stripe_params->block_height;
 		block.top_left.angle = stripe_params->lean_angle;
 
-		block.top_right.radius = ??;
-		block.top_right.angle = ??;
+//...do from here
+		//block.top_right.radius = ??;
+		//block.top_right.angle = ??;
 
 		block.bottom_right.radius = stripe_params->block_width;
 		block.bottom_right.angle = stripe_params->bottom_angle;
@@ -390,7 +389,7 @@ static void write_svg(FILE* out_stream, const struct stripe_params *stripe_param
 		const char *color = palette_get_random(palette);
 
 		//debug("%u: (%u) = %u, %u\n", i, render_order[i], pos.column, pos.row);
-		write_block(out_stream, stripe_params, color, &pos);
+		write_block(out_stream, &block, color);
 	}
 
 	svg_close_group(out_stream);
