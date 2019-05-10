@@ -3,11 +3,8 @@
  */
 
 /*
-  PROJECT="${HOME}/projects/moto-design/work/camo/blob-generator"
+  PROJECT="${HOME}/projects/moto-design/mx-graphics/design-aides/svg-generators"
   (cd ${PROJECT} && ./bootstrap) && ${PROJECT}/configure --enable-debug
-
-  TODO:
-	smooth nodes
 */
 
 #define _GNU_SOURCE
