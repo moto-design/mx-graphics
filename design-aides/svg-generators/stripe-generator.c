@@ -90,8 +90,8 @@ static const struct stripe_params init_stripe_params = {
 };
 
 static const struct stripe_params default_stripe_params = {
-	.top_angle = 5.0,
-	.bottom_angle = 10.0,
+	.top_angle = 10.0,
+	.bottom_angle = 5.0,
 	.lean_angle = 100.0,
 	.block_count = 8,
 	.block_height = 150.0,
@@ -331,41 +331,50 @@ static void write_background(FILE* out_stream,
 }
 
 struct block_params {
-	struct point_p origin;
-	struct point_p top_left;
-	struct point_p top_right;
-	struct point_p bottom_right;
+	char id[256];
+	char fill[256];
+	char stroke[256];
+	struct point_c origin;
+	struct point_c top_left;
+	struct point_c top_right;
+	struct point_c bottom_right;
 ;
 };
 
-static void write_block(FILE* out_stream, const struct block_params *block,
-	const char *color)
+static void write_block(FILE* out_stream, const struct block_params *block)
 {
-	(void)out_stream;
-	(void)block;
-	(void)color;
+	svg_open_path(out_stream, block->id, block->fill, block->stroke);
+	fprintf(out_stream, "   d=\"M %f,%f\n", block->origin.x, block->origin.y);
+	fprintf(out_stream, "    L %f,%f\n", block->top_left.x, block->top_left.y);
+	fprintf(out_stream, "    L %f,%f\n", block->top_right.x, block->top_right.y);
+	fprintf(out_stream, "    L %f,%f\n", block->bottom_right.x, block->bottom_right.y);
+	fprintf(out_stream, "    Z\"/>\n");
+	svg_close_object(out_stream);
 }
 
-static void write_svg(FILE* out_stream, const struct stripe_params *stripe_params,
-	const struct palette *palette,
-	bool background)
+static void write_svg(FILE* out_stream,
+	const struct stripe_params *stripe_params, bool background)
 {
 	unsigned int i;
 	struct svg_rect background_rect;
+	const float top_tan = tanf(deg_to_rad(stripe_params->top_angle));
+	const float bottom_tan = tanf(deg_to_rad(stripe_params->bottom_angle));
 
-	background_rect.width = stripe_params->block_count *
+	debug("bottom_tan = %f\n", bottom_tan);
+	debug("top_tan    = %f\n", top_tan);
+	
+	background_rect.width = 1.6 * stripe_params->block_count *
 		(stripe_params->block_width + stripe_params->gap_width);
-	background_rect.height = stripe_params->block_height;
+	background_rect.height = 1.6 * stripe_params->block_height;
 
-	background_rect.x = 0;
-	background_rect.y = 0;
 	background_rect.rx = 50.0;
+	background_rect.x = -background_rect.rx / 2.0;
+	background_rect.y = -background_rect.rx / 2.0;
 
 	svg_open_svg(out_stream, &background_rect);
 
 	if (background) {
-		//write_background(out_stream, &background_rect, "#001aff");
-		write_background(out_stream, &background_rect, "#000099");
+		write_background(out_stream, &background_rect, "#0000ff");
 	}
 
 	svg_open_group(out_stream, "hannah_stripes");
@@ -373,23 +382,25 @@ static void write_svg(FILE* out_stream, const struct stripe_params *stripe_param
 	for (i = 0; i < stripe_params->block_count; i++) {
 		struct block_params block;
 
-		block.origin.radius = 0.0;
-		block.origin.angle = 0.0;
+		snprintf(block.id, sizeof(block.id), "block_%d", i);
+		strcpy(block.fill, "009aff");
+		strcpy(block.stroke, "");
 
-		block.top_left.radius = stripe_params->block_height;
-		block.top_left.angle = stripe_params->lean_angle;
+		block.origin.x = i * (stripe_params->block_width + stripe_params->gap_width);
+		block.origin.y = block.origin.x * bottom_tan;
 
-//...do from here
-		//block.top_right.radius = ??;
-		//block.top_right.angle = ??;
+		block.top_left.x = block.origin.x;
+		block.top_left.y = block.origin.y + stripe_params->block_height;
 
-		block.bottom_right.radius = stripe_params->block_width;
-		block.bottom_right.angle = stripe_params->bottom_angle;
+		block.bottom_right.x = block.origin.x + stripe_params->block_width;
+		block.bottom_right.y = block.bottom_right.x * bottom_tan;
 
-		const char *color = palette_get_random(palette);
+		block.top_right.x = block.bottom_right.x;
+		block.top_right.y =block.bottom_right.y + stripe_params->block_height;
 
 		//debug("%u: (%u) = %u, %u\n", i, render_order[i], pos.column, pos.row);
-		write_block(out_stream, &block, color);
+		write_block(out_stream, &block);
+
 	}
 
 	svg_close_group(out_stream);
@@ -542,40 +553,14 @@ static void config_cb(void *cb_data, const char *section, char *config_data)
 	assert(0);
 }
 
-static const struct color_data default_colors[] = {
-	{2, "#eeffff"},
-	{2, "#bbbbbb"},
-	{2, "#777777"},
-	{1, "#97dcff"},
-	{1, "#a3a3a3"},
-	{2, "#00bbff"},
-	{2, "#009aff"},
-	{2, "#0077ff"},
-	{1, "#004dff"},
-	{1, "#003473"},
-	{2, "#0000bb"},
-	{2, "#000077"},
-	{2, "#000011"},
-
-	//{2, "#ff0000"},
-	//{2, "#00ff00"},
-	//{2, "#ffff00"},
-	//{2, "#ff8800"},
-	//{2, "#888800"},
-	//{2, "#88ff00"},
-
-};
-
-static void get_config_opts(struct opts *opts, struct palette *palette)
+static void get_config_opts(struct opts *opts)
 {
 	static const char *sections[] = {
 		"[params]",
-		"[palette]",
 	};
 	struct config_cb_data cbd = {
 		.config_file = opts->config_file,
 		.stripe_params = &opts->stripe_params,
-		.palette = palette,
 	};
 
 	config_process_file(opts->config_file, config_cb, &cbd,
@@ -586,7 +571,6 @@ int main(int argc, char *argv[])
 {
 	struct opts opts;
 	FILE *out_stream;
-	struct palette palette = {0};
 
 	if (opts_parse(&opts, argc, argv)) {
 		print_usage(&opts);
@@ -598,13 +582,12 @@ int main(int argc, char *argv[])
 		return EXIT_SUCCESS;
 	}
 
-	if (opts.config_file){
-		get_config_opts(&opts, &palette);
+	if (opts.verbose == opt_yes) {
+		set_verbose(true);
 	}
 
-	if (!palette.color_count) {
-		palette_fill(&palette, default_colors,
-			sizeof(default_colors) / sizeof(default_colors[0]));
+	if (opts.config_file){
+		get_config_opts(&opts);
 	}
 
 	if (opts.stripe_params.top_angle ==
@@ -678,9 +661,7 @@ int main(int argc, char *argv[])
 
 	srand((unsigned int)time(NULL));
 
-	write_svg(out_stream, &opts.stripe_params, &palette, opts.background);
-
-	mem_free(palette.colors);
+	write_svg(out_stream, &opts.stripe_params, opts.background);
 
 	return EXIT_SUCCESS;
 }
