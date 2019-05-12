@@ -404,7 +404,6 @@ static void write_blob(FILE* out_stream, const struct grid_params *grid_params,
 			fprintf(out_stream, "   d=\"M %f,%f\n", final.x,
 				final.y);
 		} else {
-			//echo " L ${x},${y}"
 			fprintf(out_stream, "    L %f,%f\n", final.x, final.y);
 		}
 	}
@@ -661,6 +660,10 @@ int main(int argc, char *argv[])
 	if (opts.version == opt_yes) {
 		print_version();
 		return EXIT_SUCCESS;
+	}
+
+	if (opts.verbose == opt_yes) {
+		set_verbose(true);
 	}
 
 	if (opts.config_file){
