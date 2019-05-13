@@ -287,12 +287,12 @@ void svg_open_svg(FILE *stream, const struct svg_rect *background_rect)
 	fprintf(stream, "<svg \n"
 		"  xmlns=\"http://www.w3.org/2000/svg\"\n"
 		"  xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
-		"  width=\"%f\"\n"
-		"  height=\"%f\"\n"
+//		"  width=\"%f\"\n"
+//		"  height=\"%f\"\n"
 		"  viewBox=\"%f %f %f %f\">\n",
-		background_rect->width, background_rect->width,
+//		background_rect->width, background_rect->width,
 		background_rect->x, background_rect->y,
-		background_rect->width, background_rect->width);
+		background_rect->width, background_rect->height);
 }
 
 void svg_close_svg(FILE *stream)

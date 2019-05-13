@@ -408,7 +408,7 @@ static void write_blob(FILE* out_stream, const struct grid_params *grid_params,
 		}
 	}
 
-	fprintf(out_stream, "    Z\"/>\n");
+	fprintf(out_stream, "    Z\"\n");
 	svg_close_object(out_stream);
 }
 

@@ -343,12 +343,18 @@ struct block_params {
 
 static void write_block(FILE* out_stream, const struct block_params *block)
 {
+	debug("%s\n", block->id);
+	debug(" M %f,%f\n", block->origin.x, block->origin.y);
+	debug(" L %f,%f\n", block->top_left.x, block->top_left.y);
+	debug(" L %f,%f\n", block->top_right.x, block->top_right.y);
+	debug(" L %f,%f\n", block->bottom_right.x, block->bottom_right.y);
+
 	svg_open_path(out_stream, block->id, block->fill, block->stroke);
 	fprintf(out_stream, "   d=\"M %f,%f\n", block->origin.x, block->origin.y);
 	fprintf(out_stream, "    L %f,%f\n", block->top_left.x, block->top_left.y);
 	fprintf(out_stream, "    L %f,%f\n", block->top_right.x, block->top_right.y);
 	fprintf(out_stream, "    L %f,%f\n", block->bottom_right.x, block->bottom_right.y);
-	fprintf(out_stream, "    Z\"/>\n");
+	fprintf(out_stream, "    Z\"\n");
 	svg_close_object(out_stream);
 }
 
@@ -362,14 +368,20 @@ static void write_svg(FILE* out_stream,
 
 	debug("bottom_tan = %f\n", bottom_tan);
 	debug("top_tan    = %f\n", top_tan);
-	
-	background_rect.width = 1.6 * stripe_params->block_count *
-		(stripe_params->block_width + stripe_params->gap_width);
-	background_rect.height = 1.6 * stripe_params->block_height;
 
-	background_rect.rx = 50.0;
-	background_rect.x = -background_rect.rx / 2.0;
-	background_rect.y = -background_rect.rx / 2.0;
+	background_rect.rx = 50;
+
+	background_rect.width = 2.0 * background_rect.rx +
+		stripe_params->block_count *
+		(stripe_params->block_width + stripe_params->gap_width)
+		- stripe_params->gap_width;
+
+	background_rect.height = 2.0 * background_rect.rx +
+		stripe_params->block_height +
+		bottom_tan * background_rect.width;
+
+	background_rect.x = -background_rect.rx;
+	background_rect.y = background_rect.rx - background_rect.height;
 
 	svg_open_svg(out_stream, &background_rect);
 
@@ -387,16 +399,16 @@ static void write_svg(FILE* out_stream,
 		strcpy(block.stroke, "");
 
 		block.origin.x = i * (stripe_params->block_width + stripe_params->gap_width);
-		block.origin.y = block.origin.x * bottom_tan;
+		block.origin.y = -(block.origin.x * bottom_tan);
 
 		block.top_left.x = block.origin.x;
-		block.top_left.y = block.origin.y + stripe_params->block_height;
+		block.top_left.y = block.origin.y - stripe_params->block_height;
 
 		block.bottom_right.x = block.origin.x + stripe_params->block_width;
-		block.bottom_right.y = block.bottom_right.x * bottom_tan;
+		block.bottom_right.y = -(block.bottom_right.x * bottom_tan);
 
 		block.top_right.x = block.bottom_right.x;
-		block.top_right.y =block.bottom_right.y + stripe_params->block_height;
+		block.top_right.y = block.bottom_right.y - stripe_params->block_height;
 
 		//debug("%u: (%u) = %u, %u\n", i, render_order[i], pos.column, pos.row);
 		write_block(out_stream, &block);
