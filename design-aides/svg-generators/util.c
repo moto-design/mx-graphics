@@ -354,10 +354,10 @@ float deg_to_rad(float deg)
 
 void polar_to_cart(const struct point_p *p, struct point_c *c)
 {
-	float rad = deg_to_rad(p->angle);
+	float rad = deg_to_rad(p->t);
 	
-	c->x = p->radius * cosf(rad);
-	c->y = p->radius * sinf(rad);
+	c->x = p->r * cosf(rad);
+	c->y = p->r * sinf(rad);
 }
 
 unsigned int *random_array(unsigned int len)

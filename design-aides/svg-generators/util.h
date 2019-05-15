@@ -84,8 +84,8 @@ struct point_c {
 };
 
 struct point_p {
-	float radius;
-	float angle;
+	float r;
+	float t;
 };
 
 float deg_to_rad(float deg);

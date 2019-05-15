@@ -368,13 +368,13 @@ static void write_blob(FILE* out_stream, const struct grid_params *grid_params,
 
 	svg_open_path(out_stream, blob_id, color, NULL);
 
-	for (node = 0, point_p.angle = 0; node < node_count; node++) {
+	for (node = 0, point_p.t = 0; node < node_count; node++) {
 		struct point_c point_c;
 		float sector_limit = (node + 1) * 360 / node_count;
 		float sector_start;
 		struct point_c final;
 
-		sector_start = point_p.angle + blob_params->sector_min;
+		sector_start = point_p.t + blob_params->sector_min;
 		
 		if (sector_start >= sector_limit) {
 			error("node_%u: bad sector: {%f,%f}\n",
@@ -382,8 +382,8 @@ static void write_blob(FILE* out_stream, const struct grid_params *grid_params,
 			exit(EXIT_FAILURE);
 		}
 
-		point_p.angle = random_float(sector_start, sector_limit);
-		point_p.radius = random_float(blob_params->radius_min,
+		point_p.t = random_float(sector_start, sector_limit);
+		point_p.r = random_float(blob_params->radius_min,
 			blob_params->radius_max);
 
 		polar_to_cart(&point_p, &point_c);
@@ -395,7 +395,7 @@ static void write_blob(FILE* out_stream, const struct grid_params *grid_params,
 			fprintf(stderr,
 				"  node_%u: {%f,%f} => {%f,%f} => {%f,%f}\n",
 				node,
-				point_p.radius, point_p.angle,
+				point_p.r, point_p.t,
 				point_c.x, point_c.y,
 				final.x, final.y);
 		}
