@@ -362,34 +362,39 @@ static void write_svg(FILE* out_stream,
 	const struct stripe_params *stripe_params, bool background)
 {
 	unsigned int i;
-	const struct point_c start_bottom = {
-		.x = 0.0,
-		.y = 0.0,
-	};
+	struct point_c start_bottom;
 	struct point_c start_top;
-
 	struct svg_rect background_rect;
 	const float tan_top = tanf(deg_to_rad(stripe_params->top_angle));
 	const float tan_bottom = tanf(deg_to_rad(stripe_params->bottom_angle));
 	const float tan_lean = tanf(deg_to_rad(stripe_params->lean_angle));
+	const float lean = stripe_params->block_height / tan_lean;
+	struct block_params block;
+	float block_width;
+	float gap_width;
 
 	debug("tan_top    = %f\n", tan_top);
 	debug("tan_bottom = %f\n", tan_bottom);
-	debug("tan_lean   = %f => %f\n", tan_lean, 1.0 / tan_lean);
+	debug("lean       = %f (%f)\n", lean, 1.0 / tan_lean);
 
-	start_top.x = start_bottom.x + stripe_params->block_height / tan_lean;
-	start_top.y = start_bottom.y - stripe_params->block_height;
-
+	background_rect.x = 0;
+	background_rect.y = 0;
 	background_rect.rx = 50;
-	background_rect.width = 2.0 * background_rect.rx +
-		stripe_params->block_count *
-		(stripe_params->block_width + stripe_params->gap_width)
+	background_rect.width = 2.0 * background_rect.rx - lean
+		+ stripe_params->block_count *
+			(stripe_params->block_width + stripe_params->gap_width)
 		- stripe_params->gap_width;
-	background_rect.height = 2.0 * background_rect.rx +
-		stripe_params->block_height +
-		tan_bottom * background_rect.width;
-	background_rect.x = -background_rect.rx;
-	background_rect.y = background_rect.rx - background_rect.height;
+	background_rect.height = 2.0 * background_rect.rx
+		+ stripe_params->block_height
+		+ background_rect.width * tan_top;
+
+	debug("background = (%f,%f)\n", background_rect.width, background_rect.height);
+
+	start_bottom.x = background_rect.rx - lean;
+	start_bottom.y = background_rect.height - background_rect.rx;
+
+	start_top.x = start_bottom.x + lean;
+	start_top.y = start_bottom.y - stripe_params->block_height;
 
 	svg_open_svg(out_stream, &background_rect);
 
@@ -399,26 +404,46 @@ static void write_svg(FILE* out_stream,
 
 	svg_open_group(out_stream, "hannah_stripes");
 
+	block_width = stripe_params->block_width;
+	gap_width = stripe_params->gap_width;
+
 	for (i = 0; i < stripe_params->block_count; i++) {
-		struct block_params block;
 
 		snprintf(block.id, sizeof(block.id), "block_%d", i);
 		strcpy(block.fill, "009aff");
 		strcpy(block.stroke, "");
 
-		block.bottom_left.x = start_bottom.x + i * (stripe_params->block_width + stripe_params->gap_width);
-		block.bottom_left.y = start_bottom.y - (block.bottom_left.x * tan_bottom);
+		block_width *= stripe_params->block_multiplier;
+		gap_width *= stripe_params->gap_multiplier;
+		
+		block.bottom_left.x = start_bottom.x
+			+ i  * (i * block_multiplier)
+				* (stripe_params->block_width + stripe_params->gap_width);
+		block.bottom_left.y = start_bottom.y
+			- block.bottom_left.x * tan_bottom;
 
-		block.top_left.x = start_top.x + i * (stripe_params->block_width + stripe_params->gap_width);
-		block.top_left.y = start_top.y - (block.top_left.x * tan_top);
+if (0) {
+		block.bottom_right.x = block.bottom_left.x
+			+ stripe_params->block_width;
+		block.bottom_right.y = start_bottom.y
+			- block.bottom_right.x * tan_bottom;
 
-		// do...
-		block.bottom_right.x = block.bottom_left.x + stripe_params->block_width;
-		block.bottom_right.y = -(block.bottom_right.x * tan_bottom);
+		block.top_left.x = start_top.x
+			+ i * (stripe_params->block_width
+				+ stripe_params->gap_width);
+		block.top_left.y = start_top.y - block.top_left.x * tan_top;
 
-		block.top_right.x = block.top_left.x + stripe_params->block_width;
-		block.top_right.y = -(block.top_right.x * tan_top);
-
+		block.top_right.x = block.top_left.x
+			+ stripe_params->block_width;
+		block.top_right.y = start_top.y - block.top_right.x * tan_top;
+} else {
+		block.bottom_right.x = block.bottom_left.x;
+		block.bottom_right.y = block.bottom_left.y;
+		block.top_left.x = block.bottom_left.x;
+		block.top_left.y = block.bottom_left.y;
+		block.top_right.x = block.bottom_left.x;
+		block.top_right.y = block.bottom_left.y;
+}
 		write_block(out_stream, &block);
 
 	}
