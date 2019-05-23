@@ -98,4 +98,14 @@ char *config_clean_data(char *p);
 void config_process_file(const char *config_file, config_file_callback cb,
 	void *cb_data, const char * const*sections, unsigned int section_count);
 
+static inline float min_f(float a, float b)
+{
+	return a < b ? a : b;
+}
+
+static inline float max_f(float a, float b)
+{
+	return a > b ? a : b;
+}
+
 #endif /* _MD_GENERATOR_UTIL_H */

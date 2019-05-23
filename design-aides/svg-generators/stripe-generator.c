@@ -96,9 +96,9 @@ static const struct stripe_params default_stripe_params = {
 	.block_count = 8,
 	.block_height = 150.0,
 	.block_width = 200.0,
-	.block_multiplier = 0.25,
+	.block_multiplier = 0.95,
 	.gap_width = 45.0,
-	.gap_multiplier = 0.25,
+	.gap_multiplier = 0.95,
 };
 
 static void print_usage(const struct opts *opts)
@@ -344,10 +344,10 @@ struct block_params {
 static void write_block(FILE* out_stream, const struct block_params *block)
 {
 	debug("%s\n", block->id);
-	debug(" M %f,%f\n", block->bottom_left.x, block->bottom_left.y);
-	debug(" L %f,%f\n", block->top_left.x, block->top_left.y);
-	debug(" L %f,%f\n", block->top_right.x, block->top_right.y);
-	debug(" L %f,%f\n", block->bottom_right.x, block->bottom_right.y);
+	debug(" BL %f,%f\n", block->bottom_left.x, block->bottom_left.y);
+	debug(" BR %f,%f\n", block->bottom_right.x, block->bottom_right.y);
+	debug(" TL %f,%f\n", block->top_left.x, block->top_left.y);
+	debug(" TR %f,%f\n", block->top_right.x, block->top_right.y);
 
 	svg_open_path(out_stream, block->id, block->fill, block->stroke);
 	fprintf(out_stream, "   d=\"M %f,%f\n", block->bottom_left.x, block->bottom_left.y);
@@ -358,17 +358,19 @@ static void write_block(FILE* out_stream, const struct block_params *block)
 	svg_close_object(out_stream);
 }
 
-static void write_svg(FILE* out_stream,
+#if 0
+static void write_svg1(FILE* out_stream,
 	const struct stripe_params *stripe_params, bool background)
 {
-	unsigned int i;
-	struct point_c start_bottom;
-	struct point_c start_top;
-	struct svg_rect background_rect;
 	const float tan_top = tanf(deg_to_rad(stripe_params->top_angle));
 	const float tan_bottom = tanf(deg_to_rad(stripe_params->bottom_angle));
 	const float tan_lean = tanf(deg_to_rad(stripe_params->lean_angle));
 	const float lean = stripe_params->block_height / tan_lean;
+
+	unsigned int i;
+	struct point_c start_bottom;
+	struct point_c start_top;
+	struct svg_rect background_rect;
 	struct block_params block;
 	float block_width;
 	float gap_width;
@@ -416,6 +418,7 @@ static void write_svg(FILE* out_stream,
 		block_width *= stripe_params->block_multiplier;
 		gap_width *= stripe_params->gap_multiplier;
 		
+		...do from here
 		block.bottom_left.x = start_bottom.x
 			+ i  * (i * block_multiplier)
 				* (stripe_params->block_width + stripe_params->gap_width);
@@ -446,6 +449,115 @@ if (0) {
 }
 		write_block(out_stream, &block);
 
+	}
+
+	svg_close_group(out_stream);
+	svg_close_svg(out_stream);
+}
+#endif
+
+static struct point_c next_point(const struct point_c* start,
+	float width, float angle, float lean)
+{
+	struct point_c next;
+	float lean_rad;
+	float a;
+	
+	a = width * sinf(deg_to_rad(angle)) / sinf(deg_to_rad(lean - angle));
+	
+	lean_rad = deg_to_rad(lean);
+	next.x = start->x + a * cosf(lean_rad);
+	next.y = start->y + a * sinf(lean_rad);
+
+	return next;
+}
+static void write_svg(FILE* out_stream,
+	const struct stripe_params *stripe_params, bool background)
+{
+	const float tan_top = tanf(deg_to_rad(stripe_params->top_angle));
+	const float tan_bottom = tanf(deg_to_rad(stripe_params->bottom_angle));
+	const float tan_lean = tanf(deg_to_rad(stripe_params->lean_angle));
+	const float lean = stripe_params->block_height / tan_lean;
+
+	unsigned int i;
+	struct point_c start_bottom;
+	struct point_c start_top;
+	struct svg_rect background_rect;
+	struct block_params block;
+	float block_width;
+	float gap_width;
+
+	debug("tan_top    = %f\n", tan_top);
+	debug("tan_bottom = %f\n", tan_bottom);
+	debug("lean       = %f (%f)\n", lean, 1.0 / tan_lean);
+
+	start_bottom.x = 93.82;
+	start_bottom.y = -73.39;
+	debug("start_bottom = (%f,%f)\n", start_bottom.x, start_bottom.y);
+
+	start_top.x = start_bottom.x + stripe_params->block_height / tan_lean;
+	start_top.y = start_bottom.y - stripe_params->block_height;
+	debug("start_top = (%f,%f)\n", start_top.x, start_top.y);
+
+	background_rect.rx = 50;
+	background_rect.x = min_f(start_bottom.x, start_top.x) - background_rect.rx;
+	background_rect.y = start_bottom.y - background_rect.rx;
+	debug("background x,y = (%f,%f)\n", background_rect.x, background_rect.y);
+	
+	background_rect.width = 2.0 * background_rect.rx - lean
+		+ stripe_params->block_count *
+			(stripe_params->block_width + stripe_params->gap_width)
+		- stripe_params->gap_width;
+	background_rect.height = 2.0 * background_rect.rx
+		+ stripe_params->block_height
+		+ background_rect.width * tan_top;
+
+	debug("background w,h = (%f,%f)\n", background_rect.width, background_rect.height);
+
+	svg_open_svg(out_stream, &background_rect);
+
+	if (0 && background) {
+		write_background(out_stream, &background_rect, "#eeeeee");
+	}
+
+	svg_open_group(out_stream, "hannah_stripes");
+
+	block_width = stripe_params->block_width;
+	gap_width = stripe_params->gap_width;
+
+	block.bottom_right = start_bottom;
+	block.top_right = start_top;
+
+	for (i = 0; i < stripe_params->block_count; i++) {
+
+		snprintf(block.id, sizeof(block.id), "block_%d", i);
+		strcpy(block.fill, "009aff");
+		strcpy(block.stroke, "");
+
+		debug("width = (%f,%f)\n", block_width, gap_width);
+
+		if (block_width <= 1) {
+			warn("Block width reach minimum: %f\n", block_width);
+			break;
+		}
+		if (gap_width <= 1) {
+			warn("Gap width reach minimum: %f\n", gap_width);
+			break;
+		}
+
+		block.bottom_left = next_point(&block.bottom_right, gap_width,
+			stripe_params->bottom_angle, stripe_params->lean_angle);
+
+		block.bottom_right = next_point(&block.bottom_left, block_width,
+			stripe_params->bottom_angle, stripe_params->lean_angle);
+
+		block.top_left = block.bottom_left;
+		block.top_right = block.top_left;
+
+		write_block(out_stream, &block);
+
+		block_width *= stripe_params->block_multiplier;
+		gap_width *= stripe_params->gap_multiplier;
 	}
 
 	svg_close_group(out_stream);
