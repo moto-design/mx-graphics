@@ -90,15 +90,15 @@ static const struct stripe_params init_stripe_params = {
 };
 
 static const struct stripe_params default_stripe_params = {
-	.top_angle = 10.0,
-	.bottom_angle = 5.0,
-	.lean_angle = 112.0, // 180 - 112 = 68
-	.block_count = 8,
+	.top_angle = 172.0,
+	.bottom_angle = -1.0,
+	.lean_angle = 60,
+	.block_count = 10,
 	.block_height = 150.0,
-	.block_width = 200.0,
-	.block_multiplier = 0.95,
-	.gap_width = 45.0,
-	.gap_multiplier = 0.95,
+	.block_width = 210.0,
+	.block_multiplier = 0.85,
+	.gap_width = 19.0,
+	.gap_multiplier = 0.91,
 };
 
 static void print_usage(const struct opts *opts)
@@ -463,7 +463,7 @@ static void write_svg(FILE* out_stream,
 	for (i = 0; i < stripe_params->block_count; i++) {
 
 		snprintf(block.id, sizeof(block.id), "block_%d", i);
-		strcpy(block.fill, "009aff");
+		strcpy(block.fill, "#000099");
 		strcpy(block.stroke, "");
 
 		debug("width = (%f,%f)\n", block_width, gap_width);
