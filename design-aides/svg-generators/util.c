@@ -204,9 +204,13 @@ float to_float(const char *str)
 	bool found_decimal = false;
 
 	assert(str);
+	set_verbose(true);
+	debug("str = @%s@\n", str);
 
-	for (p = start = eat_front_ws(str); *p; p++) {
-		if (*p == '-' && p != start) {
+	start = eat_front_ws(str);
+
+	for (p = (*start != '-') ? start : start + 1; *p; p++) {
+		if (*p == '-') {
 			error("bad sign: '%s'\n", str);
 			return HUGE_VALF;
 		}
@@ -224,7 +228,7 @@ float to_float(const char *str)
 		}
 	}
 
-	f = strtof(str, &end);
+	f = strtof(start, &end);
 
 	if ((f == 0.0 && end == str) || f == HUGE_VALF) {
 		error("strtof '%s' failed: %s\n", str, strerror(errno));
