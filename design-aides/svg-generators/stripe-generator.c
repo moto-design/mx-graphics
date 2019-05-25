@@ -387,7 +387,7 @@ static void write_block(FILE* out_stream, const struct block_params *block)
 }
 
 static struct point_c next_point(const struct point_c* start,
-	const struct line_factors *lf, float width)
+	float width, const struct line_factors *lf)
 {
 	struct point_c next;
 	float a;
@@ -428,12 +428,12 @@ static void write_svg(FILE* out_stream,
 	debug("start_bottom = (%f,%f)\n", start_bottom.x, start_bottom.y);
 
 	start_top.x = start_bottom.x + stripe_params->block_height / tan_lean;
-	start_top.y = start_bottom.y - stripe_params->block_height;
+	start_top.y = start_bottom.y + stripe_params->block_height;
 	debug("start_top = (%f,%f)\n", start_top.x, start_top.y);
 
 	background_rect.rx = 50;
 	background_rect.x = min_f(start_bottom.x, start_top.x) - background_rect.rx;
-	background_rect.y = start_bottom.y - background_rect.rx;
+	background_rect.y = start_bottom.y + background_rect.rx;
 	debug("background x,y = (%f,%f)\n", background_rect.x, background_rect.y);
 	
 	background_rect.width = 2.0 * background_rect.rx - lean
@@ -468,24 +468,15 @@ static void write_svg(FILE* out_stream,
 
 		debug("width = (%f,%f)\n", block_width, gap_width);
 
-		if (block_width <= 1) {
-			warn("Block width reach minimum: %f\n", block_width);
-			break;
-		}
-		if (gap_width <= 1) {
-			warn("Gap width reach minimum: %f\n", gap_width);
-			break;
-		}
-
 		block.bottom_left = next_point(&block.bottom_right,
-			&stripe_factors.bottom, gap_width);
+			gap_width, &stripe_factors.bottom);
 		block.bottom_right = next_point(&block.bottom_left,
-			&stripe_factors.bottom, block_width);
+			block_width, &stripe_factors.bottom);
 
 		block.top_left = next_point(&block.top_right,
-			&stripe_factors.top, gap_width);
+			gap_width, &stripe_factors.top);
 		block.top_right = next_point(&block.top_left,
-			&stripe_factors.top, block_width);
+			block_width, &stripe_factors.top);
 
 		write_block(out_stream, &block);
 
