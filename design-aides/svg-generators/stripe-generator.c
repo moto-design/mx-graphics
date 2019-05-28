@@ -491,9 +491,6 @@ static void write_svg(FILE* out_stream,
 struct config_cb_data {
 	const char *config_file;
 	struct stripe_params *stripe_params;
-	struct palette* palette;
-	struct color_data *color_data;
-	unsigned color_counter;
 };
 
 static void config_cb(void *cb_data, const char *section, char *config_data)
@@ -522,72 +519,22 @@ static void config_cb(void *cb_data, const char *section, char *config_data)
 		name = config_clean_data(name);
 		value = config_clean_data(value);
 
-		//debug("params: '%s', '%s'\n", name, value);
+		debug("params: '%s', '%s'\n", name, value);
 
-		if (cbd->stripe_params->top_angle ==
-			init_stripe_params.top_angle &&
-			!strcmp(name, "top_angle")) {
-			cbd->stripe_params->top_angle =
-				to_float(value);
-		}
-		if (cbd->stripe_params->bottom_angle ==
-			init_stripe_params.bottom_angle &&
-			!strcmp(name, "bottom_angle")) {
-			cbd->stripe_params->bottom_angle =
-				to_float(value);
-		}
-		if (cbd->stripe_params->lean_angle ==
-			init_stripe_params.lean_angle &&
-			!strcmp(name, "lean_angle")) {
-			cbd->stripe_params->lean_angle =
-				to_float(value);
-		}
-		if (cbd->stripe_params->block_count ==
-			init_stripe_params.block_count &&
-			!strcmp(name, "block_count")) {
-			cbd->stripe_params->block_count =
-				to_unsigned(value);
-		}
-		if (cbd->stripe_params->block_height ==
-			init_stripe_params.block_height &&
-			!strcmp(name, "block_height")) {
-			cbd->stripe_params->block_height = to_float(value);
-		}
-		if (cbd->stripe_params->block_width ==
-			init_stripe_params.block_width &&
-			!strcmp(name, "block_width")) {
-			cbd->stripe_params->block_width = to_float(value);
-		}
-		if (cbd->stripe_params->block_multiplier ==
-			init_stripe_params.block_multiplier &&
-			!strcmp(name, "block_multiplier")) {
-			cbd->stripe_params->block_multiplier = to_float(value);
-		}
-		if (cbd->stripe_params->gap_width ==
-			init_stripe_params.gap_width &&
-			!strcmp(name, "gap_width")) {
-			cbd->stripe_params->gap_width = to_float(value);
-		}
-		if (cbd->stripe_params->gap_multiplier ==
-			init_stripe_params.gap_multiplier &&
-			!strcmp(name, "gap_multiplier")) {
-			cbd->stripe_params->gap_multiplier = to_float(value);
-		}
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, top_angle, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, bottom_angle, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, lean_angle, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_count, to_unsigned(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_height, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_width, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_multiplier, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_width, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_multiplier, to_float(value));
 
 		return;
 	}
 
 	if (!strcmp(section, "ON_EXIT")) {
-		if (cbd->color_data) {
-			palette_fill(cbd->palette, cbd->color_data,
-				cbd->color_counter);
-			mem_free(cbd->color_data);
-			cbd->color_data = NULL;
-		} else {
-			warn("No palette found in config file: '%s'\n",
-				cbd->config_file);
-		}
-		
 		return;
 	}
 	
@@ -631,52 +578,15 @@ int main(int argc, char *argv[])
 		get_config_opts(&opts);
 	}
 
-	if (opts.stripe_params.top_angle ==
-		init_stripe_params.top_angle) {
-		opts.stripe_params.top_angle =
-			default_stripe_params.top_angle;
-	}
-	if (opts.stripe_params.bottom_angle ==
-		init_stripe_params.bottom_angle) {
-		opts.stripe_params.bottom_angle =
-			default_stripe_params.bottom_angle;
-	}
-	if (opts.stripe_params.lean_angle ==
-		init_stripe_params.lean_angle) {
-		opts.stripe_params.lean_angle =
-			default_stripe_params.lean_angle;
-	}
-
-	if (opts.stripe_params.block_count ==
-		init_stripe_params.block_count) {
-		opts.stripe_params.block_count =
-			default_stripe_params.block_count;
-	}
-	if (opts.stripe_params.block_height ==
-		init_stripe_params.block_height) {
-		opts.stripe_params.block_height =
-			default_stripe_params.block_height;
-	}
-	if (opts.stripe_params.block_width ==
-		init_stripe_params.block_width) {
-		opts.stripe_params.block_width =
-			default_stripe_params.block_width;
-	}
-	if (opts.stripe_params.block_multiplier ==
-		init_stripe_params.block_multiplier) {
-		opts.stripe_params.block_multiplier =
-			default_stripe_params.block_multiplier;
-	}
-	if (opts.stripe_params.gap_width ==
-		init_stripe_params.gap_width) {
-		opts.stripe_params.gap_width =
-			default_stripe_params.gap_width;
-	}
-	if (opts.stripe_params.gap_multiplier ==
-		init_stripe_params.gap_multiplier) {
-		opts.stripe_params.gap_multiplier =
-			default_stripe_params.gap_multiplier;
-	}
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, top_angle);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, bottom_angle);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, lean_angle);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_count);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_height);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_width);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_multiplier);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, gap_width);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, gap_multiplier);
 
 	if (!strcmp(opts.output_file, "-")) {
 		out_stream = stdout;
