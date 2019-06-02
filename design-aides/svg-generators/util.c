@@ -37,7 +37,13 @@
 
 #include "util.h"
 
+bool exit_on_error = false;
 bool verbose = false;
+
+void set_exit_on_error(bool state)
+{
+	exit_on_error = state;
+}
 
 void set_verbose(bool state)
 {
@@ -57,6 +63,11 @@ void  __attribute__((unused)) _error(const char *func, int line,
 	fflush(stderr);
 
 	va_end(ap);
+
+	if (exit_on_error) {
+		exit(EXIT_FAILURE);
+	}
+
 }
 
 void  __attribute__((unused)) _log(const char *func, int line,

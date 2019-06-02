@@ -652,6 +652,8 @@ int main(int argc, char *argv[])
 	FILE *out_stream;
 	struct palette palette = {0};
 
+	set_exit_on_error(true);
+
 	if (opts_parse(&opts, argc, argv)) {
 		print_usage(&opts);
 		return EXIT_FAILURE;

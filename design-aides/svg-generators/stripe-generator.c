@@ -466,7 +466,8 @@ static void write_svg(FILE* out_stream,
 
 		snprintf(block_array[i].id, sizeof(block_array[i].id),
 			"block_%d", i);
-		strcpy(block_array[i].fill, "#000099");
+		//strcpy(block_array[i].fill, "#000099");
+		strcpy(block_array[i].fill, "#deff00");
 		strcpy(block_array[i].stroke, "");
 
 		block_array[i].bottom_left = next_point(
@@ -566,6 +567,8 @@ int main(int argc, char *argv[])
 {
 	struct opts opts;
 	FILE *out_stream;
+
+	set_exit_on_error(true);
 
 	if (opts_parse(&opts, argc, argv)) {
 		print_usage(&opts);
