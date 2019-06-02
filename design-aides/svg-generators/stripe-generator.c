@@ -54,10 +54,10 @@ static void print_bugreport(void)
 }
 
 struct stripe_params {
+	unsigned int block_count;
 	float top_angle;
 	float bottom_angle;
 	float lean_angle;
-	unsigned int block_count;
 	float block_height;
 	float block_width;
 	float block_multiplier;
@@ -78,26 +78,26 @@ struct opts {
 };
 
 static const struct stripe_params init_stripe_params = {
+	.block_count = UINT_MAX,
 	.top_angle = HUGE_VALF,
 	.bottom_angle = HUGE_VALF,
 	.lean_angle = HUGE_VALF,
-	.block_count = UINT_MAX,
 	.block_height = HUGE_VALF,
 	.block_width = HUGE_VALF,
-	.block_multiplier = HUGE_VALF,
 	.gap_width = HUGE_VALF,
+	.block_multiplier = HUGE_VALF,
 	.gap_multiplier = HUGE_VALF,
 };
 
 static const struct stripe_params default_stripe_params = {
+	.block_count = 10,
 	.top_angle = 172.0,
 	.bottom_angle = -1.0,
 	.lean_angle = 60,
-	.block_count = 10,
 	.block_height = 150.0,
 	.block_width = 210.0,
-	.block_multiplier = 0.85,
 	.gap_width = 19.0,
+	.block_multiplier = 0.85,
 	.gap_multiplier = 0.91,
 };
 
@@ -109,14 +109,14 @@ static void print_usage(const struct opts *opts)
 "%s - Generates SVG file of hannah stripes.\n"
 "Usage: %s [flags]\n"
 "Option flags:\n"
+"  --block-count      - block-count. Default: '%u'.\n"
 "  --top-angle        - angle. Default: '%f'.\n"
 "  --bottom-angle     - angle. Default: '%f'.\n"
 "  --lean-angle       - angle. Default: '%f'.\n"
-"  --block-count      - block-count. Default: '%u'.\n"
 "  --block-height     - height. Default: '%f'.\n"
 "  --block-width      - width. Default: '%f'.\n"
-"  --block-multiplier - multiplier. Default: '%f'.\n"
 "  --gap-width        - width. Default: '%f'.\n"
+"  --block-multiplier - multiplier. Default: '%f'.\n"
 "  --gap-multiplier   - multiplier. Default: '%f'.\n"
 
 "  -o --output-file  - Output file. Default: '%s'.\n"
@@ -127,14 +127,14 @@ static void print_usage(const struct opts *opts)
 "  -V --version      - Display the program version number.\n",
 		program_name, program_name,
 
+		opts->stripe_params.block_count,
 		opts->stripe_params.top_angle,
 		opts->stripe_params.bottom_angle,
 		opts->stripe_params.lean_angle,
-		opts->stripe_params.block_count,
 		opts->stripe_params.block_height,
 		opts->stripe_params.block_width,
-		opts->stripe_params.block_multiplier,
 		opts->stripe_params.gap_width,
+		opts->stripe_params.block_multiplier,
 		opts->stripe_params.gap_multiplier,
 
 		opts->output_file,
@@ -148,14 +148,14 @@ static void print_usage(const struct opts *opts)
 static int opts_parse(struct opts *opts, int argc, char *argv[])
 {
 	static const struct option long_options[] = {
-		{"top-angle",        required_argument, NULL, '1'},
-		{"bottom-angle",     required_argument, NULL, '2'},
-		{"lean-angle",       required_argument, NULL, '3'},
-		{"block-count",      required_argument, NULL, '4'},
+		{"block-count",      required_argument, NULL, '1'},
+		{"top-angle",        required_argument, NULL, '2'},
+		{"bottom-angle",     required_argument, NULL, '3'},
+		{"lean-angle",       required_argument, NULL, '4'},
 		{"block-height",     required_argument, NULL, '5'},
 		{"block-width",      required_argument, NULL, '6'},
-		{"block-multiplier", required_argument, NULL, '7'},
-		{"gap-width",        required_argument, NULL, '8'},
+		{"gap-width",        required_argument, NULL, '7'},
+		{"block-multiplier", required_argument, NULL, '8'},
 		{"gap-multiplier",   required_argument, NULL, '9'},
 
 		{"output-file",    required_argument, NULL, 'o'},
@@ -202,29 +202,29 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 		switch (c) {
 		// stripe
 		case '1':
+			opts->stripe_params.block_count = to_unsigned(optarg);
+			if (opts->stripe_params.block_count == UINT_MAX) {
+				opts->help = opt_yes;
+				return -1;
+			}
+			break;
+		case '2':
 			opts->stripe_params.top_angle = to_float(optarg);
 			if (opts->stripe_params.top_angle == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
-		case '2':
+		case '3':
 			opts->stripe_params.bottom_angle = to_float(optarg);
 			if (opts->stripe_params.bottom_angle == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
-		case '3':
+		case '4':
 			opts->stripe_params.lean_angle = to_float(optarg);
 			if (opts->stripe_params.lean_angle == HUGE_VALF) {
-				opts->help = opt_yes;
-				return -1;
-			}
-			break;
-		case '4':
-			opts->stripe_params.block_count = to_unsigned(optarg);
-			if (opts->stripe_params.block_count == UINT_MAX) {
 				opts->help = opt_yes;
 				return -1;
 			}
@@ -244,15 +244,15 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 			}
 			break;
 		case '7':
-			opts->stripe_params.block_multiplier = to_float(optarg);
-			if (opts->stripe_params.block_multiplier == HUGE_VALF) {
+			opts->stripe_params.gap_width = to_float(optarg);
+			if (opts->stripe_params.gap_width == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
 			break;
 		case '8':
-			opts->stripe_params.gap_width = to_float(optarg);
-			if (opts->stripe_params.gap_width == HUGE_VALF) {
+			opts->stripe_params.block_multiplier = to_float(optarg);
+			if (opts->stripe_params.block_multiplier == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
@@ -528,14 +528,14 @@ static void config_cb(void *cb_data, const char *section, char *config_data)
 
 		debug("params: '%s', '%s'\n", name, value);
 
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_count, to_unsigned(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, top_angle, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, bottom_angle, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, lean_angle, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_count, to_unsigned(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_height, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_width, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_multiplier, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_width, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_multiplier, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_multiplier, to_float(value));
 
 		return;
@@ -585,14 +585,14 @@ int main(int argc, char *argv[])
 		get_config_opts(&opts);
 	}
 
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_count);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, top_angle);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, bottom_angle);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, lean_angle);
-	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_count);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_height);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_width);
-	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_multiplier);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, gap_width);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_multiplier);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, gap_multiplier);
 
 	if (!strcmp(opts.output_file, "-")) {
