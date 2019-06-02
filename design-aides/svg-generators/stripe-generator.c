@@ -407,15 +407,14 @@ static void write_svg(FILE* out_stream,
 	const float tan_bottom = tanf(deg_to_rad(stripe_params->bottom_angle));
 	const float tan_lean = tanf(deg_to_rad(stripe_params->lean_angle));
 	const float lean = stripe_params->block_height / tan_lean;
-
 	const struct stripe_factors stripe_factors =
 		get_stripe_factors(stripe_params);
 
 	unsigned int i;
+	struct svg_rect background_rect;
 	struct point_c start_bottom;
 	struct point_c start_top;
-	struct svg_rect background_rect;
-	struct block_params block;
+	struct block_params* block_array;
 	float block_width;
 	float gap_width;
 
@@ -454,35 +453,43 @@ static void write_svg(FILE* out_stream,
 
 	svg_open_group(out_stream, "hannah_stripes");
 
+
 	block_width = stripe_params->block_width;
 	gap_width = stripe_params->gap_width;
 
-	block.bottom_right = start_bottom;
-	block.top_right = start_top;
+	block_array = mem_alloc((stripe_params->block_count + 1) * sizeof(block_array[0]));
+	block_array[0].bottom_right = start_bottom;
+	block_array[0].top_right = start_top;
 
-	for (i = 0; i < stripe_params->block_count; i++) {
-
-		snprintf(block.id, sizeof(block.id), "block_%d", i);
-		strcpy(block.fill, "#000099");
-		strcpy(block.stroke, "");
-
+	for (i = 1; i < stripe_params->block_count + 1; i++) {
 		debug("width = (%f,%f)\n", block_width, gap_width);
 
-		block.bottom_left = next_point(&block.bottom_right,
-			gap_width, &stripe_factors.bottom);
-		block.bottom_right = next_point(&block.bottom_left,
-			block_width, &stripe_factors.bottom);
+		snprintf(block_array[i].id, sizeof(block_array[i].id),
+			"block_%d", i);
+		strcpy(block_array[i].fill, "#000099");
+		strcpy(block_array[i].stroke, "");
 
-		block.top_left = next_point(&block.top_right,
+		block_array[i].bottom_left = next_point(
+			&block_array[i - 1].bottom_right, gap_width,
+			&stripe_factors.bottom);
+		block_array[i].bottom_right = next_point(
+			&block_array[i].bottom_left, block_width,
+			&stripe_factors.bottom);
+
+		block_array[i].top_left = next_point(&block_array[i - 1].top_right,
 			gap_width, &stripe_factors.top);
-		block.top_right = next_point(&block.top_left,
+		block_array[i].top_right = next_point(&block_array[i].top_left,
 			block_width, &stripe_factors.top);
-
-		write_block(out_stream, &block);
 
 		block_width *= stripe_params->block_multiplier;
 		gap_width *= stripe_params->gap_multiplier;
 	}
+
+	for (i = 1; i < stripe_params->block_count + 1; i++) {
+		write_block(out_stream, &block_array[i]);
+	}
+
+	mem_free(block_array);
 
 	svg_close_group(out_stream);
 	svg_close_svg(out_stream);
