@@ -63,6 +63,9 @@ struct stripe_params {
 	float block_multiplier;
 	float gap_width;
 	float gap_multiplier;
+	float first_edge;
+	float second_edge;
+	float third_edge;
 };
 
 enum opt_value {opt_undef = 0, opt_yes, opt_no};
@@ -87,6 +90,9 @@ static const struct stripe_params init_stripe_params = {
 	.gap_width = HUGE_VALF,
 	.block_multiplier = HUGE_VALF,
 	.gap_multiplier = HUGE_VALF,
+	.first_edge = HUGE_VALF,
+	.second_edge = HUGE_VALF,
+	.third_edge = HUGE_VALF,
 };
 
 static const struct stripe_params default_stripe_params = {
@@ -99,6 +105,9 @@ static const struct stripe_params default_stripe_params = {
 	.gap_width = 19.0,
 	.block_multiplier = 0.85,
 	.gap_multiplier = 0.91,
+	.first_edge = 1.1,
+	.second_edge = 2.2,
+	.third_edge = 3.3
 };
 
 static void print_usage(const struct opts *opts)
@@ -118,6 +127,9 @@ static void print_usage(const struct opts *opts)
 "  --gap-width        - width. Default: '%f'.\n"
 "  --block-multiplier - multiplier. Default: '%f'.\n"
 "  --gap-multiplier   - multiplier. Default: '%f'.\n"
+"  --first-edge       - edge width. Default: '%f'.\n"
+"  --second-edge      - edge width. Default: '%f'.\n"
+"  --third-edge       - edge width. Default: '%f'.\n"
 
 "  -o --output-file  - Output file. Default: '%s'.\n"
 "  -f --config-file  - Config file. Default: '%s'.\n"
@@ -136,6 +148,9 @@ static void print_usage(const struct opts *opts)
 		opts->stripe_params.gap_width,
 		opts->stripe_params.block_multiplier,
 		opts->stripe_params.gap_multiplier,
+		opts->stripe_params.first_edge,
+		opts->stripe_params.second_edge,
+		opts->stripe_params.third_edge,
 
 		opts->output_file,
 		opts->config_file,
@@ -157,6 +172,9 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 		{"gap-width",        required_argument, NULL, '7'},
 		{"block-multiplier", required_argument, NULL, '8'},
 		{"gap-multiplier",   required_argument, NULL, '9'},
+		{"first-edge",       required_argument, NULL, 'A'},
+		{"second-edge",      required_argument, NULL, 'B'},
+		{"third-edge",       required_argument, NULL, 'C'},
 
 		{"output-file",    required_argument, NULL, 'o'},
 		{"config-file",    required_argument, NULL, 'f'},
@@ -260,6 +278,27 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 		case '9':
 			opts->stripe_params.gap_multiplier = to_float(optarg);
 			if (opts->stripe_params.gap_multiplier == HUGE_VALF) {
+				opts->help = opt_yes;
+				return -1;
+			}
+			break;
+		case 'A':
+			opts->stripe_params.first_edge = to_float(optarg);
+			if (opts->stripe_params.first_edge == HUGE_VALF) {
+				opts->help = opt_yes;
+				return -1;
+			}
+			break;
+		case 'B':
+			opts->stripe_params.second_edge = to_float(optarg);
+			if (opts->stripe_params.second_edge == HUGE_VALF) {
+				opts->help = opt_yes;
+				return -1;
+			}
+			break;
+		case 'C':
+			opts->stripe_params.third_edge = to_float(optarg);
+			if (opts->stripe_params.third_edge == HUGE_VALF) {
 				opts->help = opt_yes;
 				return -1;
 			}
@@ -538,6 +577,9 @@ static void config_cb(void *cb_data, const char *section, char *config_data)
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_width, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_multiplier, to_float(value));
 		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_multiplier, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, first_edge, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, second_edge, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, third_edge, to_float(value));
 
 		return;
 	}
@@ -597,6 +639,9 @@ int main(int argc, char *argv[])
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, gap_width);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, block_multiplier);
 	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, gap_multiplier);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, first_edge);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, second_edge);
+	opts_set_default(opts.stripe_params, init_stripe_params, default_stripe_params, third_edge);
 
 	if (!strcmp(opts.output_file, "-")) {
 		out_stream = stdout;
