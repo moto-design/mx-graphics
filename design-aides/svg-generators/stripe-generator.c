@@ -439,6 +439,23 @@ static struct point_c next_point(const struct point_c* start,
 	return next;
 }
 
+struct edges {
+	struct block_params first;
+	struct block_params second;
+	struct block_params third;
+};
+
+static struct edges get_edges(const struct stripe_params *stripe_params,
+	const struct block_params* block_array)
+{
+	struct edges edges;
+
+	block_array[0].bottom_right;
+	block_array[0].top_right;
+
+	return edges;
+}
+
 static void write_svg(FILE* out_stream,
 	const struct stripe_params *stripe_params, bool background)
 {
@@ -456,6 +473,7 @@ static void write_svg(FILE* out_stream,
 	struct block_params* block_array;
 	float block_width;
 	float gap_width;
+	struct edges edges;
 
 	debug("tan_top    = %f\n", tan_top);
 	debug("tan_bottom = %f\n", tan_bottom);
@@ -524,6 +542,8 @@ static void write_svg(FILE* out_stream,
 		block_width *= stripe_params->block_multiplier;
 		gap_width *= stripe_params->gap_multiplier;
 	}
+
+	edges = get_edges(stripe_params, block_array);
 
 	for (i = 1; i < stripe_params->block_count + 1; i++) {
 		write_block(out_stream, &block_array[i]);
