@@ -107,6 +107,14 @@ void config_process_file(const char *config_file, config_file_callback cb,
 	} \
 } while(0)
 
+#define opts_set_value(_param, _value, _error) do { \
+	_param = _value; \
+	if (_param == _error) { \
+		opts->help = opt_yes; \
+		return -1; \
+	} \
+} while(0)
+
 #define opts_set_default(_opts, _init, _default, _param) do { \
 	if (_opts._param == _init._param) { \
 		debug("set from default: " #_param "\n"); \
