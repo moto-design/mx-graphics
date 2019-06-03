@@ -446,8 +446,10 @@ static struct edges get_edges(const struct stripe_params *stripe_params,
 {
 	struct edges edges;
 
-	block_array[0].bottom_right;
-	block_array[0].top_right;
+	(void)stripe_params;
+
+	edges.first.bottom_left = block_array[0].bottom_right;
+	//block_array[0].top_right;
 
 	return edges;
 }
@@ -541,6 +543,8 @@ static void write_svg(FILE* out_stream,
 
 	edges = get_edges(stripe_params, block_array);
 
+	write_block(out_stream, &edges.first);
+
 	for (i = 1; i < stripe_params->block_count + 1; i++) {
 		write_block(out_stream, &block_array[i]);
 	}
@@ -584,18 +588,18 @@ static void config_cb(void *cb_data, const char *section, char *config_data)
 
 		debug("params: '%s', '%s'\n", name, value);
 
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_count, to_unsigned(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, top_angle, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, bottom_angle, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, lean_angle, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_height, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_width, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_width, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, block_multiplier, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, gap_multiplier, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, first_edge.start, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, second_edge, to_float(value));
-		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe_, third_edge, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., block_count, to_unsigned(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., top_angle, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., bottom_angle, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., lean_angle, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., block_height, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., block_width, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., gap_width, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., block_multiplier, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., gap_multiplier, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., first_edge.start, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., second_edge.start, to_float(value));
+		cbd_set_value(cbd->stripe_params, init_stripe_params, name, stripe., third_edge.start, to_float(value));
 
 		return;
 	}
