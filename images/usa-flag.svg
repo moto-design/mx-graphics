@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <metadata>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+      <rdf:Description dc:title="USA Flag" dc:creator="x3300 &lt;x3300x@gmail.com&gt;" dc:date="2019-11-03" dc:rights="All Rights Reserved" dc:license="Fabricators Design License">
+        <dc:description>
+Fabricators Design License draft v10.11.20
+
+Copyright x3300 &lt;x3300x@gmail.com&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this design and associated documentation (the _Design_), to
+deal in the Design without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of the Design, and to permit persons to
+whom the Design is furnished to do so, subject to the following
+conditions:
+
+ The above copyright notice and this permission notice shall be
+ included in all copies or substantial portions of the Design.
+
+ If you modify the Design including creating additional or alternate
+ documentation formats (images, drawings, text documents, etc.), you
+ may copy and distribute your modified version of the Design in any
+ form provided that you also do one of the following:
+
+  Accompany the modified version of the Design with documentation
+  which corresponds to and completely describes the modified version
+  of the Design; or,
+
+  Accompany the modified version of the Design with a written offer
+  for documentation which corresponds to and completely describes the
+  modified version of the Design.
+
+THE DESIGN IS PROVIDED _AS IS_, WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+DESIGN OR THE USE OR OTHER DEALINGS IN THE DESIGN.
+        </dc:description>
+      </rdf:Description>
+    </rdf:RDF>
+  </metadata>
+  <rect id="white_background" fill="#ffffff" width="19000.000000" height="10000.000000" x="0.000000" y="0.000000" rx="0.000000"/>
+  <path id="red_stripes" stroke="#b22234" stroke-width="769" d=" M0,384.615387 H19000.000000 M0,1923.076935 H19000.000000 M0,3461.538483 H19000.000000 M0,5000.000031 H19000.000000 M0,6538.461578 H19000.000000 M0,8076.923126 H19000.000000 M0,9615.384674 H19000.000000 "/>
+  <rect id="blue_background" fill="#3c3b6e" width="7600.000000" height="5384.615234" x="0.000000" y="0.000000" rx="0.000000"/>
+  <g id="star_group" fill="#ffffff">
+    <g id="stars_18">
+      <g id="stars_9">
+        <g id="stars_5">
+          <g id="stars_4">
+            <polygon id="stars_1" transform=" translate(633.333313 538.461548) " points=" -0.000013,-307.692322 69.081230,-95.082153 292.632782,-95.082161 111.775780,36.318153 180.857010,248.928314 -0.000005,117.528008 -180.856995,248.928314 -111.775772,36.318157 -292.632782,-95.082153 -69.081207,-95.082169 "/>
+            <use xlink:href="#stars_1" y="1076.923096"/>
+            <use xlink:href="#stars_1" y="2153.846191"/>
+            <use xlink:href="#stars_1" y="3230.769287"/>
+          </g>
+          <use xlink:href="#stars_1" y="4307.692383"/>
+        </g>
+        <use xlink:href="#stars_4" x="633.333313" y="538.461548"/>
+      </g>
+      <use xlink:href="#stars_9" x="1266.666626"/>
+    </g>
+    <use xlink:href="#stars_18" x="2533.333252"/>
+    <use xlink:href="#stars_9" x="5066.666504"/>
+    <use xlink:href="#stars_5" x="6333.333130"/>
+  </g>
+</svg>
