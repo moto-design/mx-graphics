@@ -328,15 +328,15 @@ void svg_close_group(FILE *stream)
 }
 
 void svg_open_object(FILE *stream, const char *type, const char *id,
-	const char *fill, const char *stroke)
+	const char *fill, const char *stroke, unsigned int stroke_width)
 {
-	//static const char debug_stroke[]=";stroke:#000000;stroke-width:0.5";
-	static const char debug_stroke[]="";
-
-	(void)stroke;
-
-	fprintf(stream, "  <%s id=\"%s\" style=\"fill:%s%s\"\n", type, id, fill,
-		debug_stroke);
+	fprintf(stream, "  <%s id=\"%s\"\n", type, id);
+	if (fill) {
+		fprintf(stream, "   fill=\"%s\"\n", fill);
+	}
+	if (stroke) {
+		fprintf(stream, "   stroke=\"%s\" stroke-width=\"%u\"\n", stroke, stroke_width);
+	}
 }
 
 void svg_close_object(FILE *stream)
@@ -345,15 +345,28 @@ void svg_close_object(FILE *stream)
 }
 
 void svg_open_path(FILE *stream, const char *id, const char *fill,
-	const char *stroke)
+	const char *stroke, unsigned int stroke_width)
 {
-	svg_open_object(stream, "path", id, fill, stroke);
+	svg_open_object(stream, "path", id, fill, stroke, stroke_width);
+}
+
+void svg_open_polygon(FILE *stream, const char *id, const char *fill,
+	const char *stroke, unsigned int stroke_width)
+{
+	svg_open_object(stream, "polygon", id, fill, stroke, stroke_width);
+	fprintf(stream, "   points=\"\n");
+}
+
+void svg_close_polygon(FILE *stream)
+{
+	fprintf(stream, "   \"\n");
 }
 
 void svg_write_rect(FILE *stream, const char *id, const char *fill,
-	const char *stroke, const struct svg_rect *rect)
+	const char *stroke, unsigned int stroke_width,
+	const struct svg_rect *rect)
 {
-	svg_open_object(stream, "rect", id, fill, stroke);
+	svg_open_object(stream, "rect", id, fill, stroke, stroke_width);
 
 	fprintf(stream,
 		"   width=\"%f\"\n   height=\"%f\"\n   x=\"%f\"\n   y=\"%f\"\n   rx=\"%f\"\n",

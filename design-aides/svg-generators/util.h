@@ -73,12 +73,15 @@ void svg_close_svg(FILE *stream);
 void svg_open_group(FILE *stream, const char *id);
 void svg_close_group(FILE *stream);
 void svg_open_object(FILE *stream, const char *type, const char *id,
-	const char *fill, const char *stroke);
+	const char *fill, const char *stroke, unsigned int stroke_width);
 void svg_close_object(FILE *stream);
 void svg_open_path(FILE *stream, const char *id, const char *fill,
-	const char *stroke);
+	const char *stroke, unsigned int stroke_width);
+void svg_open_polygon(FILE *stream, const char *id, const char *fill,
+	const char *stroke, unsigned int stroke_width);
+void svg_close_polygon(FILE *stream);
 void svg_write_rect(FILE *stream, const char *id, const char *fill,
-	const char *stroke, const struct svg_rect *rect);
+	const char *stroke, unsigned int stroke_width, const struct svg_rect *rect);
 
 struct point_c {
 	float x;
