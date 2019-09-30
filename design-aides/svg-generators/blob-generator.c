@@ -366,7 +366,7 @@ static void write_blob(FILE* out_stream, const struct grid_params *grid_params,
 		blob_id, node_count, pos->column, pos->row,
 		blob_offset.x, blob_offset.y);
 
-	svg_open_path(out_stream, blob_id, color, NULL);
+	svg_open_path(out_stream, blob_id, color, NULL, 0);
 
 	for (node = 0, point_p.t = 0; node < node_count; node++) {
 		struct point_c point_c;
@@ -418,7 +418,7 @@ static void write_background(FILE* out_stream,
 	assert(is_hex_color(fill_color));
 
 	svg_open_group(out_stream, "background");
-	svg_write_rect(out_stream, "background", fill_color, NULL,
+	svg_write_rect(out_stream, "background", fill_color, NULL, 0,
 		background_rect);
 	svg_close_group(out_stream);
 }

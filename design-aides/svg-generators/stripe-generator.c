@@ -360,15 +360,15 @@ static void write_background(FILE* out_stream,
 	assert(is_hex_color(fill_color));
 
 	svg_open_group(out_stream, "background");
-	svg_write_rect(out_stream, "background", fill_color, NULL,
+	svg_write_rect(out_stream, "background", fill_color, NULL, 0,
 		background_rect);
 	svg_close_group(out_stream);
 }
 
 struct block_params {
 	char id[256];
-	char fill[256];
-	char stroke[256];
+	struct fill fill;
+	struct stroke stroke;
 	struct point_c bottom_left;
 	struct point_c top_left;
 	struct point_c top_right;
@@ -412,7 +412,7 @@ static void write_block(FILE* out_stream, const struct block_params *block)
 	debug(" TL %f,%f\n", block->top_left.x, block->top_left.y);
 	debug(" TR %f,%f\n", block->top_right.x, block->top_right.y);
 
-	svg_open_path(out_stream, block->id, block->fill, block->stroke);
+	svg_open_path(out_stream, block->id, block->fill.color, block->stroke.color, block->stroke.width);
 	fprintf(out_stream, "   d=\"M %f,%f\n", block->bottom_left.x, block->bottom_left.y);
 	fprintf(out_stream, "    L %f,%f\n", block->top_left.x, block->top_left.y);
 	fprintf(out_stream, "    L %f,%f\n", block->top_right.x, block->top_right.y);
@@ -463,9 +463,9 @@ static struct block_params* fill_block_array(
 
 		snprintf(block_array[i].id, sizeof(block_array[i].id),
 			"block_%d", i);
-		//strcpy(block_array[i].fill, "#000099");
-		strcpy(block_array[i].fill, "#deff00");
-		strcpy(block_array[i].stroke, "");
+		//strcpy(block_array[i].fill.color, "#000099");
+		fill_set(&block_array[i].fill, "#deff00");
+		stroke_set(&block_array[i].stroke, NULL, 0);
 
 		block_array[i].bottom_left = next_point(
 			&block_array[i - 1].bottom_right, gap_width,
@@ -497,7 +497,8 @@ static struct edges get_edges(const struct stripe_params *stripe_params,
 {
 	struct edges edges;
 
-	...do from here
+#pragma message "...do from here"
+
 	(void)stripe_params;
 
 	edges.first.bottom_left = block_array[0].bottom_right;

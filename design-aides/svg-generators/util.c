@@ -264,6 +264,20 @@ float random_float(float min, float max)
     return min + (float)rand() / (float)RAND_MAX * (max - min);
 }
 
+void hex_color_set_value(char *color, const char *value)
+{
+	debug("value = '%s'\n", value);
+	assert(color);
+
+	if (value && !is_hex_color(value) ) {
+		fprintf(stderr, "Bad hex color value: '%s'\n", value);
+		assert(0);
+		exit(EXIT_FAILURE);
+	}
+
+	memcpy(color, value, hex_color_len);
+}
+
 void palette_fill(struct palette *palette, const struct color_data *data,
 	unsigned int data_len)
 {
@@ -422,7 +436,8 @@ bool is_hex_color(const char *str)
 		&& *(str + 3) && isxdigit(*(str + 3))
 		&& *(str + 4) && isxdigit(*(str + 4))
 		&& *(str + 5) && isxdigit(*(str + 5))
-		&& *(str + 6) && isxdigit(*(str + 6)));
+		&& *(str + 6) && isxdigit(*(str + 6))
+		&& *(str + 7) == 0);
 }
 
 char *config_clean_data(char *p)
@@ -502,4 +517,20 @@ next_line:
 	cb(cb_data, "ON_EXIT", NULL);
 }
 
+struct stroke *stroke_set(struct stroke *stroke, const char *color,
+	unsigned int width)
+{
+	debug("color = '%s', width = %u\n", color, width);
 
+	stroke->width = width;
+	hex_color_set_value(stroke->color, color);
+	return stroke;
+}
+
+struct fill *fill_set(struct fill *fill, const char *color)
+{
+	debug("color = '%s'\n", color);
+
+	hex_color_set_value(fill->color, color);
+	return fill;
+}

@@ -41,6 +41,7 @@ unsigned int *random_array(unsigned int len);
 
 bool is_hex_color(const char *p);
 #define hex_color_len sizeof("#000000")
+void hex_color_set_value(char *color, const char *value);
 
 struct color_data
 {
@@ -134,5 +135,19 @@ static inline float max_f(float a, float b)
 {
 	return a > b ? a : b;
 }
+
+struct stroke {
+	unsigned int width;
+	char color[hex_color_len];
+};
+
+struct stroke *stroke_set(struct stroke *stroke, const char *color,
+	unsigned int width);
+
+struct fill {
+	char color[hex_color_len];
+};
+
+struct fill *fill_set(struct fill *fill, const char *color);
 
 #endif /* _MD_GENERATOR_UTIL_H */
