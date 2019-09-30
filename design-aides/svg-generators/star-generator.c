@@ -192,11 +192,13 @@ struct star {
 
 static void write_star(FILE* out_stream, const struct star_params *star_params)
 {
+	static const struct stroke stroke = {.color = "#0000ff", .width = 3};
+	static const struct fill fill = {.color = "#ffdd00"};
 	static const char star_id[] = "star_1";
 	unsigned int node_count = 10;
 	unsigned int node;
 
-	svg_open_polygon(out_stream, star_id, "#ff0000", "#0000ff", 3);
+	svg_open_polygon(out_stream, star_id, fill.color, stroke.color, stroke.width);
 
 	fprintf(out_stream, "     %f,%f\n", 0.0, 0.0);
 	fprintf(out_stream, "     %f,%f\n", star_params->radius / 2, star_params->radius / 2);
