@@ -94,8 +94,26 @@ struct point_p {
 	float t;
 };
 
+struct point_pc {
+	struct point_p p;
+	struct point_c c;
+};
+
 float deg_to_rad(float deg);
-void polar_to_cart(const struct point_p *p, struct point_c *c);
+
+struct point_c *polar_to_cart(const struct point_p *p, struct point_c *c);
+struct point_p *cart_to_polar(const struct point_c *c, struct point_p *p);
+
+static inline struct point_c *pc_polar_to_cart(struct point_pc *pc) {
+	return polar_to_cart(&pc->p, &pc->c);
+};
+static inline struct point_p *pc_cart_to_polar(struct point_pc *pc) {
+	return cart_to_polar(&pc->c, &pc->p);
+};
+
+void debug_print_cart(const struct point_c *c);
+void debug_print_polar(const struct point_p *p);
+void debug_print_pc(const struct point_pc *pc);
 
 typedef void (*config_file_callback)(void *cb_data, const char *section,
 	char *config_data);
