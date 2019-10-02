@@ -8,6 +8,7 @@
 #include "config-file.h"
 #include "log.h"
 #include "mem.h"
+#include "svg.h"
 #include "util.h"
 
 #endif /* _MD_GENERATOR_SVG_UTILS_H */

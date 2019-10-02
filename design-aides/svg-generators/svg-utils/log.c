@@ -15,8 +15,8 @@
 
 #include "log.h"
 
-bool exit_on_error = false;
-bool verbose = false;
+static bool exit_on_error = false;
+static bool verbose = false;
 
 void set_exit_on_error(bool state)
 {

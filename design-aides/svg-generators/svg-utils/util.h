@@ -6,13 +6,15 @@
 #define _MD_GENERATOR_UTIL_H
 
 #include <stdbool.h>
-#include <stdio.h>
+//#include <stdio.h>
 
 const char *eat_front_ws(const char *p);
 void eat_tail_ws(char *p);
 
 unsigned int to_unsigned(const char *str);
 float to_float(const char *str);
+
+float deg_to_rad(float deg);
 
 int random_int(int min, int max);
 unsigned int random_unsigned(unsigned int min, unsigned int max);
@@ -40,30 +42,6 @@ void palette_fill(struct palette *palette, const struct color_data *data,
 	unsigned int data_len);
 const char *palette_get_random(const struct palette *palette);
 
-
-struct svg_rect {
-	float width;
-	float height;
-	float x;
-	float y;
-	float rx;
-};
-
-void svg_open_svg(FILE *stream, const struct svg_rect *background_rect);
-void svg_close_svg(FILE *stream);
-void svg_open_group(FILE *stream, const char *id);
-void svg_close_group(FILE *stream);
-void svg_open_object(FILE *stream, const char *type, const char *id,
-	const char *fill, const char *stroke, unsigned int stroke_width);
-void svg_close_object(FILE *stream);
-void svg_open_path(FILE *stream, const char *id, const char *fill,
-	const char *stroke, unsigned int stroke_width);
-void svg_open_polygon(FILE *stream, const char *id, const char *fill,
-	const char *stroke, unsigned int stroke_width);
-void svg_close_polygon(FILE *stream);
-void svg_write_rect(FILE *stream, const char *id, const char *fill,
-	const char *stroke, unsigned int stroke_width, const struct svg_rect *rect);
-
 struct point_c {
 	float x;
 	float y;
@@ -78,8 +56,6 @@ struct point_pc {
 	struct point_p p;
 	struct point_c c;
 };
-
-float deg_to_rad(float deg);
 
 struct point_c *polar_to_cart(const struct point_p *p, struct point_c *c);
 struct point_p *cart_to_polar(const struct point_c *c, struct point_p *p);

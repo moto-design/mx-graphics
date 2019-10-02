@@ -15,6 +15,7 @@
 #include <fenv.h>
 #include <limits.h>
 #include <math.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "log.h"
@@ -128,6 +129,11 @@ float to_float(const char *str)
 	return f;
 }
 
+float deg_to_rad(float deg)
+{
+	return deg * M_PI / 180.0;
+}
+
 int random_int(int min, int max)
 {
 	return min + (rand() % (max - min + 1));
@@ -188,89 +194,6 @@ void palette_fill(struct palette *palette, const struct color_data *data,
 const char *palette_get_random(const struct palette *palette)
 {
 	return palette->colors[random_unsigned(0, palette->color_count - 1)];
-}
-
-void svg_open_svg(FILE *stream, const struct svg_rect *background_rect)
-{
-	fprintf(stream, "<svg \n"
-		"  xmlns=\"http://www.w3.org/2000/svg\"\n"
-		"  xmlns:inkscape=\"http://www.inkscape.org/namespaces/inkscape\"\n"
-//		"  width=\"%f\"\n"
-//		"  height=\"%f\"\n"
-		"  viewBox=\"%f %f %f %f\">\n",
-//		background_rect->width, background_rect->width,
-		background_rect->x, background_rect->y,
-		background_rect->width, background_rect->height);
-}
-
-void svg_close_svg(FILE *stream)
-{
-	fprintf(stream, "</svg>\n");
-}
-
-void svg_open_group(FILE *stream, const char *id)
-{
-	fprintf(stream,
-		" <g  id=\"%s\" inkscape:label=\"%s\" inkscape:groupmode=\"layer\">\n",
-		id, id);
-}
-
-void svg_close_group(FILE *stream)
-{
-	fprintf(stream, " </g>\n");
-}
-
-void svg_open_object(FILE *stream, const char *type, const char *id,
-	const char *fill, const char *stroke, unsigned int stroke_width)
-{
-	fprintf(stream, "  <%s id=\"%s\"\n", type, id);
-	if (fill) {
-		fprintf(stream, "   fill=\"%s\"\n", fill);
-	}
-	if (stroke) {
-		fprintf(stream, "   stroke=\"%s\" stroke-width=\"%u\"\n", stroke, stroke_width);
-	}
-}
-
-void svg_close_object(FILE *stream)
-{
-	fprintf(stream, "  />\n");
-}
-
-void svg_open_path(FILE *stream, const char *id, const char *fill,
-	const char *stroke, unsigned int stroke_width)
-{
-	svg_open_object(stream, "path", id, fill, stroke, stroke_width);
-}
-
-void svg_open_polygon(FILE *stream, const char *id, const char *fill,
-	const char *stroke, unsigned int stroke_width)
-{
-	svg_open_object(stream, "polygon", id, fill, stroke, stroke_width);
-	fprintf(stream, "   points=\"\n");
-}
-
-void svg_close_polygon(FILE *stream)
-{
-	fprintf(stream, "   \"\n");
-}
-
-void svg_write_rect(FILE *stream, const char *id, const char *fill,
-	const char *stroke, unsigned int stroke_width,
-	const struct svg_rect *rect)
-{
-	svg_open_object(stream, "rect", id, fill, stroke, stroke_width);
-
-	fprintf(stream,
-		"   width=\"%f\"\n   height=\"%f\"\n   x=\"%f\"\n   y=\"%f\"\n   rx=\"%f\"\n",
-		rect->width, rect->height, rect->x, rect->y, rect->rx);
-
-	svg_close_object(stream);
-}
-
-float deg_to_rad(float deg)
-{
-	return deg * M_PI / 180.0;
 }
 
 struct point_c *polar_to_cart(const struct point_p *p, struct point_c *c)
