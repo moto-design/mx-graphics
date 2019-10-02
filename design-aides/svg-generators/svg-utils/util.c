@@ -12,98 +12,13 @@
 #include <assert.h>
 #include <ctype.h>
 #include <errno.h>
-#include <fcntl.h>
 #include <fenv.h>
-#include <getopt.h>
 #include <limits.h>
 #include <math.h>
-#include <poll.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <unistd.h>
-
-#include <linux/limits.h>
-
-#include <netinet/in.h>
-#include <netinet/tcp.h>
-#include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/types.h>
 
 #include "util.h"
-
-bool exit_on_error = false;
-bool verbose = false;
-
-void set_exit_on_error(bool state)
-{
-	exit_on_error = state;
-}
-
-void set_verbose(bool state)
-{
-	verbose = state;
-}
-
-void  __attribute__((unused)) _error(const char *func, int line,
-	const char *fmt, ...)
-{
-	va_list ap;
-
-	fprintf(stderr, "ERROR: %s:%d: ", func, line);
-
-	va_start(ap, fmt);
-
-	vfprintf(stderr, fmt, ap);
-	fflush(stderr);
-
-	va_end(ap);
-
-	if (exit_on_error) {
-		exit(EXIT_FAILURE);
-	}
-
-}
-
-void  __attribute__((unused)) _log(const char *func, int line,
-	const char *fmt, ...)
-{
-	va_list ap;
-	
-	if (!verbose) {
-		return;
-	}
-
-	fprintf(stderr, "%s:%d: ", func, line);
-
-	va_start(ap, fmt);
-
-	vfprintf(stderr, fmt, ap);
-	fflush(stderr);
-
-	va_end(ap);
-}
-
-void  __attribute__((unused)) _warn(const char *func, int line,
-	const char *fmt, ...)
-{
-	va_list ap;
-
-	fprintf(stderr, "WARNING: %s:%d: ", func, line);
-
-	va_start(ap, fmt);
-
-	vfprintf(stderr, fmt, ap);
-	fflush(stderr);
-
-	va_end(ap);
-}
 
 void *mem_alloc(size_t size)
 {
