@@ -1,4 +1,6 @@
-# moto-design Image Generators
+# moto-design SVG Generators
+
+Programs to generate scalable vector graphics files for camouflage blobs, user defined stars, and Yamaha racing like srtipes.
 
 See the [INSTALL](INSTALL) file for installation info.
 
@@ -6,11 +8,25 @@ See the [INSTALL](INSTALL) file for installation info.
 
 Generates SVG file of camouflage blobs.
 
-### Samples
+### Blob Samples
 
 ![monochrome](samples/monochrome.svg)
 ![monochrome](samples/monochrome-smooth.svg)
 ![monochrome](samples/monochrome-arm.svg)
+
+## star-generator
+
+Generates SVG file of star.
+
+### Star Samples
+
+
+## stripe-generator
+
+Generates SVG file of Yamaha like stripe.
+
+### Stripe Samples
+
 
 ## Licence & Usage
 
