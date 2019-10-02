@@ -1,5 +1,5 @@
 /*
- *  moto-design random image generator.
+ *  moto-design SGV utils.
  */
 
 #define _GNU_SOURCE
