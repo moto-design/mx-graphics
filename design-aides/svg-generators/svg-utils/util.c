@@ -15,48 +15,11 @@
 #include <fenv.h>
 #include <limits.h>
 #include <math.h>
-#include <stdlib.h>
 #include <string.h>
 
+#include "log.h"
+#include "mem.h"
 #include "util.h"
-
-void *mem_alloc(size_t size)
-{
-	void *p = malloc(size);
-
-	if (!p) {
-		error("malloc %lu failed: %s.\n", (unsigned long)size,
-			strerror(errno));
-		assert(0);
-		exit(EXIT_FAILURE);
-	}
-	memset(p, 0, size);
-	return p;
-}
-
-void *mem_realloc(void *p, size_t size)
-{
-	void *n = realloc(p, size);
-
-	if (!n) {
-		error("realloc %lu failed: %s.\n", (unsigned long)size,
-			strerror(errno));
-		assert(0);
-		exit(EXIT_FAILURE);
-	}
-	return n;
-}
-
-void mem_free(void *p)
-{
-	if (!p) {
-		error("null free.\n");
-		assert(0);
-		exit(EXIT_FAILURE);
-	}
-
-	free(p);
-}
 
 const char *eat_front_ws(const char *p)
 {
@@ -407,83 +370,6 @@ bool is_hex_color(const char *str)
 		&& *(str + 5) && isxdigit(*(str + 5))
 		&& *(str + 6) && isxdigit(*(str + 6))
 		&& *(str + 7) == 0);
-}
-
-char *config_clean_data(char *p)
-{
-	char *start;
-
-	assert(p);
-
-	p = start = (char *)eat_front_ws(p);
-
-	while (*p) {
-		if (is_hex_color(p)) {
-			p += 7;
-			continue;
-		}
-		if (*p == '\n'  || *p == '\r' || *p == '#') {
-			*p = 0;
-			eat_tail_ws(start);
-			return start;
-		}
-		p++;
-	}
-	eat_tail_ws(start);
-	return start;
-}
-
-void config_process_file(const char *config_file, config_file_callback cb,
-	void *cb_data, const char * const*sections, unsigned int section_count)
-{
-	FILE *fp;
-	char buf[512];
-	const char *current_section = NULL;
-
-	fp = fopen(config_file, "r");
-
-	if (!fp) {
-		error("open config '%s' failed: %s\n", config_file,
-		      strerror(errno));
-		assert(0);
-		exit(EXIT_FAILURE);
-	}
-
-	while (fgets(buf, sizeof(buf), fp)) {
-		unsigned int i;
-		char *p;
-
-		p = config_clean_data(buf);
-
-		if (!*p) {
-			debug("null line\n");
-			continue;
-		}
-
-		for (i = 0; i < section_count; i++) {
-			const char *s = sections[i];
-
-			if (!strcmp(p, s)) {
-				debug("new section: %s => %s:\n", current_section, s);
-				current_section = s;
-				goto next_line;
-			}
-		}
-
-		if (!current_section) {
-			error("Bad config data '%s' (%s)\n", p, config_file);
-			assert(0);
-			exit(EXIT_FAILURE);
-		}
-
-		debug("cb: %s, '%s'\n", current_section, buf);
-		cb(cb_data, current_section, buf);
-next_line:
-		(void)0;
-	}
-
-	debug("ON_EXIT\n");
-	cb(cb_data, "ON_EXIT", NULL);
 }
 
 struct stroke *stroke_set(struct stroke *stroke, const char *color,

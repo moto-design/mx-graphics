@@ -19,11 +19,10 @@
 #include <getopt.h>
 #include <limits.h>
 #include <math.h>
-#include <stdlib.h>
 #include <string.h>
 #include <time.h>
 
-#include "util.h"
+#include "svg-utils.h"
 
 static const char program_name[] = "star-generator";
 

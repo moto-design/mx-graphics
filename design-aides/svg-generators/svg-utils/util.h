@@ -7,13 +7,6 @@
 
 #include <stdbool.h>
 #include <stdio.h>
-#include <unistd.h>
-
-#include "log.h"
-
-void *mem_alloc(size_t size);
-void *mem_realloc(void *p, size_t size);
-void mem_free(void *p);
 
 const char *eat_front_ws(const char *p);
 void eat_tail_ws(char *p);
@@ -101,35 +94,6 @@ static inline struct point_p *pc_cart_to_polar(struct point_pc *pc) {
 void debug_print_cart(const struct point_c *c);
 void debug_print_polar(const struct point_p *p);
 void debug_print_pc(const struct point_pc *pc);
-
-typedef void (*config_file_callback)(void *cb_data, const char *section,
-	char *config_data);
-
-char *config_clean_data(char *p);
-void config_process_file(const char *config_file, config_file_callback cb,
-	void *cb_data, const char * const*sections, unsigned int section_count);
-
-#define cbd_set_value(_cbd, _init, _name, _prefix, _param, _value) do { \
-	if (_cbd->_param == _init._param && !strcmp(_name, #_prefix #_param)) { \
-		debug("set from config: " #_param "\n"); \
-		_cbd->_param = _value; \
-	} \
-} while(0)
-
-#define opts_set_value(_param, _value, _error) do { \
-	_param = _value; \
-	if (_param == _error) { \
-		opts->help = opt_yes; \
-		return -1; \
-	} \
-} while(0)
-
-#define opts_set_default(_opts, _init, _default, _param) do { \
-	if (_opts._param == _init._param) { \
-		debug("set from default: " #_param "\n"); \
-		_opts._param = _default._param; \
-	} \
-} while(0)
 
 static inline float min_f(float a, float b)
 {
