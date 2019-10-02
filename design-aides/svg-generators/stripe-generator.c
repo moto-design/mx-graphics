@@ -514,12 +514,13 @@ static void write_svg(FILE* out_stream,
 	const float tan_bottom = tanf(deg_to_rad(stripe_params->bottom_angle));
 	const float tan_lean = tanf(deg_to_rad(stripe_params->lean_angle));
 	const float lean = stripe_params->block_height / tan_lean;
-
 	unsigned int i;
 	struct svg_rect background_rect;
 	struct start_points start;
 	struct block_params* block_array;
 	struct edges edges;
+
+	(void)tan_bottom;
 
 	debug("tan_top    = %f\n", tan_top);
 	debug("tan_bottom = %f\n", tan_bottom);
