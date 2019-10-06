@@ -54,6 +54,6 @@ AC_SUBST([LIBTOOL_DEPS])
 AC_SUBST([DESTDIR])
 
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([svg-utils/Makefile] [Makefile])
+AC_CONFIG_FILES([lib/Makefile] [Makefile])
 
 AC_OUTPUT

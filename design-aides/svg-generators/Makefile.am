@@ -1,8 +1,8 @@
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = svg-utils
-svg_lib = svg-utils/libsvg-utils.la
-svg_include = $(srcdir)/svg-utils
+SUBDIRS = lib
+svg_lib = lib/libsvg-utils.la
+svg_include = $(srcdir)/lib
 
 ACLOCAL_AMFLAGS = -I m4
 
