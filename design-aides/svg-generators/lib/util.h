@@ -6,15 +6,12 @@
 #define _MD_GENERATOR_UTIL_H
 
 #include <stdbool.h>
-//#include <stdio.h>
 
 const char *eat_front_ws(const char *p);
 void eat_tail_ws(char *p);
 
 unsigned int to_unsigned(const char *str);
 float to_float(const char *str);
-
-float deg_to_rad(float deg);
 
 int random_int(int min, int max);
 unsigned int random_unsigned(unsigned int min, unsigned int max);
@@ -41,35 +38,6 @@ void palette_parse_config(const char *config_file, struct palette *palette);
 void palette_fill(struct palette *palette, const struct color_data *data,
 	unsigned int data_len);
 const char *palette_get_random(const struct palette *palette);
-
-struct point_c {
-	float x;
-	float y;
-};
-
-struct point_p {
-	float r;
-	float t;
-};
-
-struct point_pc {
-	struct point_p p;
-	struct point_c c;
-};
-
-struct point_c *polar_to_cart(const struct point_p *p, struct point_c *c);
-struct point_p *cart_to_polar(const struct point_c *c, struct point_p *p);
-
-static inline struct point_c *pc_polar_to_cart(struct point_pc *pc) {
-	return polar_to_cart(&pc->p, &pc->c);
-};
-static inline struct point_p *pc_cart_to_polar(struct point_pc *pc) {
-	return cart_to_polar(&pc->c, &pc->p);
-};
-
-void debug_print_cart(const struct point_c *c);
-void debug_print_polar(const struct point_p *p);
-void debug_print_pc(const struct point_pc *pc);
 
 static inline float min_f(float a, float b)
 {

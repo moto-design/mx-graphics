@@ -3,6 +3,7 @@ noinst_LTLIBRARIES = libsvg-utils.la
 libsvg_utils_la_SOURCES = \
 	svg-utils.h \
 	config-file.c config-file.h \
+	geometry.c geometry.h \
 	log.c log.h \
 	mem.c mem.h \
 	svg.c svg.h \

@@ -103,8 +103,8 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libsvg_utils_la_DEPENDENCIES =
-am_libsvg_utils_la_OBJECTS = config-file.lo log.lo mem.lo svg.lo \
-	util.lo
+am_libsvg_utils_la_OBJECTS = config-file.lo geometry.lo log.lo mem.lo \
+	svg.lo util.lo
 libsvg_utils_la_OBJECTS = $(am_libsvg_utils_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -296,6 +296,7 @@ noinst_LTLIBRARIES = libsvg-utils.la
 libsvg_utils_la_SOURCES = \
 	svg-utils.h \
 	config-file.c config-file.h \
+	geometry.c geometry.h \
 	log.c log.h \
 	mem.c mem.h \
 	svg.c svg.h \
@@ -358,6 +359,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/config-file.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/geometry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mem.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/svg.Plo@am__quote@
