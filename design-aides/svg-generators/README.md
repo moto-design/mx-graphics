@@ -1,6 +1,6 @@
 # moto-design SVG Generators
 
-Programs to generate scalable vector graphics files for camouflage blobs, user defined stars, and Yamaha racing like srtipes.
+Programs for generating Scalable Vector Graphics image files for camouflage blobs, user defined stars, and Kenny Roberts racing srtipes.
 
 See the [INSTALL](INSTALL) file for installation info.
 
