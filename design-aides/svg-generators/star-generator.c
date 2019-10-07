@@ -40,6 +40,7 @@ struct star_params {
 	unsigned int points;
 	unsigned int density;
 	float radius;
+	float rotation;
 };
 
 enum opt_value {opt_undef = 0, opt_yes, opt_no};
@@ -56,12 +57,14 @@ static const struct star_params init_star_params = {
 	.points = UINT_MAX,
 	.density = UINT_MAX,
 	.radius = HUGE_VALF,
+	.rotation = HUGE_VALF,
 };
 
 static const struct star_params default_star_params = {
 	.points = 5,
 	.density = 2,
 	.radius = 10000.0 * 4.0 / 13.0 / 5.0 / 2.0,
+	.rotation = 90.0,
 };
 
 static void print_usage(const struct opts *opts)
@@ -69,12 +72,13 @@ static void print_usage(const struct opts *opts)
 	print_version();
 
 	fprintf(stderr,
-"%s - Generates SVG file of star.\n"
+"%s - Generates SVG file of a star.\n"
 "Usage: %s [flags]\n"
 "Option flags:\n"
-"  --points          - Star number of points. Default: '%u'.\n"
-"  --density         - Star density. Default: '%u'.\n"
+"  --points          - Star number of points (vertices). Default: '%u'.\n"
+"  --density         - Star polygon density. Default: '%u'.\n"
 "  --radius          - Star radius. Default: '%f'.\n"
+"  --rotation        - Star rotation. Default: '%f'.\n"
 "  -o --output-file  - Output file. Default: '%s'.\n"
 "  -h --help         - Show this help and exit.\n"
 "  -v --verbose      - Verbose execution.\n"
@@ -83,6 +87,7 @@ static void print_usage(const struct opts *opts)
 		opts->star_params.points,
 		opts->star_params.density,
 		opts->star_params.radius,
+		opts->star_params.rotation,
 		opts->output_file
 	);
 
@@ -92,9 +97,10 @@ static void print_usage(const struct opts *opts)
 static int opts_parse(struct opts *opts, int argc, char *argv[])
 {
 	static const struct option long_options[] = {
-		{"points",     required_argument, NULL, '1'},
-		{"density",     required_argument, NULL, '2'},
-		{"radius",     required_argument, NULL, '3'},
+		{"points",       required_argument, NULL, '1'},
+		{"density",      required_argument, NULL, '2'},
+		{"radius",       required_argument, NULL, '3'},
+		{"rotation",     required_argument, NULL, '4'},
 
 		{"output-file",    required_argument, NULL, 'o'},
 		{"config-file",    required_argument, NULL, 'f'},
@@ -158,6 +164,13 @@ static int opts_parse(struct opts *opts, int argc, char *argv[])
 				return -1;
 			}
 			break;
+		case '4':
+			opts->star_params.rotation = to_float(optarg);
+			if (opts->star_params.rotation == HUGE_VALF) {
+				opts->help = opt_yes;
+				return -1;
+			}
+			break;
 		// admin
 		case 'o': {
 			size_t len;
@@ -199,6 +212,50 @@ struct star {
 	struct node *nodes;
 };
 
+static void init_segments(const struct star_params *star_params,
+	float sector_angle, struct segment_c *seg1, struct segment_c *seg2)
+{
+	struct point_p pp;
+
+	pp.r = star_params->radius;
+
+	pp.t = 0.0;
+	polar_to_cart(&pp, &seg1->a);
+	
+	//pp.r = star_params->radius;
+	pp.t += 2.0 * sector_angle * star_params->density;
+	polar_to_cart(&pp, &seg1->b);
+
+	seg1->slope = segment_slope(seg1);
+	seg1->intercept = segment_intercept(seg1);
+
+	debug_print_segment("seg1 ", seg1);
+
+	pp.t = 2.0 * sector_angle;
+	polar_to_cart(&pp, &seg2->a);
+	
+	pp.t += 2.0 * sector_angle * star_params->density;
+	polar_to_cart(&pp, &seg2->b);
+
+	seg2->slope = segment_slope(seg2);
+	seg2->intercept = segment_intercept(seg2);
+
+	debug_print_segment("seg2 ", seg2);
+
+	debug("<\n");
+}
+
+static float get_inner_radius(const struct segment_c *seg1,
+	const struct segment_c *seg2)
+{
+	struct point_pc pc;
+	
+	pc.c = segment_intersection(seg1, seg2);
+	pc_cart_to_polar(&pc);
+	
+	return pc.p.r;
+}
+
 static void write_star(FILE* out_stream, const struct star_params *star_params)
 {
 	static const struct stroke stroke = {.color = "#0000ff", .width = 3};
@@ -208,30 +265,27 @@ static void write_star(FILE* out_stream, const struct star_params *star_params)
 	float inner_radius;
 	unsigned int node;
 	struct point_pc pc;
+	struct segment_c seg1;
+	struct segment_c seg2;
 	char star_id[256];
 
 	snprintf(star_id, sizeof(star_id), "start_%d", star_params->points);
-
-	pc.p.r = star_params->radius;
-	pc.p.t = 2.0 * sector_angle;
-	pc_polar_to_cart(&pc);
-
-	debug_print_pc(&pc);
-
-	debug("cosf       = %f\n", cosf(deg_to_rad(sector_angle)));
-
-	inner_radius = pc.c.y / cosf(deg_to_rad(sector_angle));
+	
+	init_segments(star_params, sector_angle, &seg1, &seg2);
+	inner_radius = get_inner_radius(&seg1, &seg2);
 
 	debug("points       = %u\n", star_params->points);
+	debug("density      = %u\n", star_params->density);
 	debug("radius       = %f\n", star_params->radius);
-	debug("inner_radius = %f\n", inner_radius);
 	debug("sector_angle = %f\n", sector_angle);
+	debug("inner_radius = %f\n", inner_radius);
 
 	svg_open_polygon(out_stream, star_id, fill.color, stroke.color, stroke.width);
 
 	for (node = 0, pc.p.r = star_params->radius, pc.p.t = sector_angle;
 		node < node_count;
-		node++, pc.p.t += sector_angle, pc.p.r = (node % 2) ? inner_radius : star_params->radius) {
+		node++, pc.p.t += sector_angle, pc.p.r = (node % 2)
+			? inner_radius : star_params->radius) {
 
 		debug("node = %u, angle = %f, radius = %f\n", node, pc.p.t, pc.p.r);
 		pc_polar_to_cart(&pc);
@@ -289,6 +343,9 @@ int main(int argc, char *argv[])
 	}
 	if (opts.star_params.radius == init_star_params.radius) {
 		opts.star_params.radius = default_star_params.radius;
+	}
+	if (opts.star_params.rotation == init_star_params.rotation) {
+		opts.star_params.rotation = default_star_params.rotation;
 	}
 
 	if (!strcmp(opts.output_file, "-")) {

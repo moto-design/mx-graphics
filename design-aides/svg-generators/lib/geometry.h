@@ -37,13 +37,15 @@ static inline struct point_p *pc_cart_to_polar(struct point_pc *pc) {
 	return cart_to_polar(&pc->c, &pc->p);
 };
 
-void debug_print_cart(const struct point_c *c);
-void debug_print_polar(const struct point_p *p);
-void debug_print_pc(const struct point_pc *pc);
+void debug_print_cart(const char *msg, const struct point_c *c);
+void debug_print_polar(const char *msg, const struct point_p *p);
+void debug_print_pc(const char *msg, const struct point_pc *pc);
 
 struct segment_c {
 	struct point_c a;
 	struct point_c b;
+	float slope;
+	float intercept;
 };
 
 struct segment_p {
@@ -51,7 +53,30 @@ struct segment_p {
 	struct point_p b;
 };
 
-struct point_c *segment_intersection(const struct segment_c *s1,
-	const struct segment_c *s2, struct point_c i);
+void debug_print_segment(const char *msg, const struct segment_c *seg);
+
+static inline float segment_slope(struct segment_c *seg)
+{	
+	return (seg->b.y - seg->a.y) / (seg->b.x - seg->a.x);
+}
+
+static inline float segment_intercept(struct segment_c *seg)
+{
+	return seg->a.y - (seg->slope * seg->a.x);
+}
+
+static inline struct segment_c *segment_init(struct segment_c *seg,
+	const struct point_c *a, const struct point_c *b)
+{
+	seg->a = *a;
+	seg->b = *b;
+	seg->slope = segment_slope(seg);
+	seg->intercept = segment_intercept(seg);
+	
+	return seg;
+}
+
+struct point_c segment_intersection(const struct segment_c *seg1,
+	const struct segment_c *seg2);
 
 #endif /* _MD_GENERATOR_GEOMETRY_H */

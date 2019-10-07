@@ -1,3 +1,8 @@
+svg_include = $(srcdir)
+
+AM_CPPFLAGS = -I$(svg_include) $(DEFAULT_CPPFLAGS)
+AM_CFLAGS = $(DEFAULT_CFLAGS)
+
 noinst_LTLIBRARIES = libsvg-utils.la
 
 libsvg_utils_la_SOURCES = \

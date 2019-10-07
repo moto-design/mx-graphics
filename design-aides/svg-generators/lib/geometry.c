@@ -63,19 +63,52 @@ struct point_p *cart_to_polar(const struct point_c *c, struct point_p *p)
 	return p;
 }
 
-void debug_print_cart(const struct point_c *c)
+void debug_print_cart(const char *msg, const struct point_c *c)
 {
-	debug("cart:    x = %f, y = %f\n", c->x, c->y);
+	debug("%scart:   x = %f, y = %f\n", msg, c->x, c->y);
 }
 
-void debug_print_polar(const struct point_p *p)
+void debug_print_polar(const char *msg, const struct point_p *p)
 {
-	debug("plolar: r = %f, t = %f\n", p->r, p->t);
+	debug("%spolar: r = %f, t = %f\n", msg, p->r, p->t);
 }
 
-void debug_print_pc(const struct point_pc *pc)
+void debug_print_pc(const char *msg, const struct point_pc *pc)
 {
-	debug_print_polar(&pc->p);
-	debug_print_cart(&pc->c);
+	debug_print_polar(msg, &pc->p);
+	debug_print_cart(msg, &pc->c);
 }
 
+void debug_print_segment(const char *msg, const struct segment_c *seg)
+{
+	debug("%sa         = {%f, %f}\n", msg, seg->a.x, seg->a.y);
+	debug("%sb         = {%f, %f}\n", msg, seg->b.x, seg->b.y);
+	debug("%sslope     = %f\n", msg, seg->slope);
+	debug("%sintercept = %f\n", msg, seg->intercept);
+}
+
+struct point_c segment_intersection(const struct segment_c *seg1,
+	const struct segment_c *seg2)
+
+{
+	static const float s_diff_range = 0.1;
+	const float s_diff = seg1->slope - seg2->slope;
+	struct point_c i;
+
+	debug("slope diff = %f\n", s_diff);
+
+	if (s_diff > -s_diff_range && s_diff < s_diff_range) {
+		error("No intersection (%f).\n", s_diff);
+		debug_print_segment("seg1 ", seg1);
+		debug_print_segment("seg2 ", seg2);
+		assert(0);
+		exit(EXIT_FAILURE);
+	}
+
+	i.x = (seg2->intercept - seg1->intercept) / (s_diff);
+	i.y = seg1->slope * i.x + seg1->intercept;
+	
+	debug_print_cart("intersection ", &i);
+
+	return i;
+}

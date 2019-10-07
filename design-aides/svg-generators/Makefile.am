@@ -24,15 +24,15 @@ libtool: $(LIBTOOL_DEPS)
 
 bin_PROGRAMS = blob-generator star-generator stripe-generator
 
-blob_generator_DEPENDENCIES = Makefile
+blob_generator_DEPENDENCIES = Makefile $(svg_lib)
 blob_generator_SOURCES = blob-generator.c
 blob_generator_LDADD = $(svg_lib)
 
-star_generator_DEPENDENCIES = Makefile
+star_generator_DEPENDENCIES = Makefile $(svg_lib)
 star_generator_SOURCES = star-generator.c
 star_generator_LDADD = $(svg_lib)
 
-stripe_generator_DEPENDENCIES = Makefile
+stripe_generator_DEPENDENCIES = Makefile $(svg_lib)
 stripe_generator_SOURCES = stripe-generator.c
 stripe_generator_LDADD = $(svg_lib)
 
