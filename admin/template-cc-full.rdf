@@ -1,3 +1,4 @@
+    <rdf:RDF>
       <cc:Work rdf:about="">
         <dc:format>image/svg+xml</dc:format>
         <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
@@ -34,5 +35,6 @@
             <dc:title>@@contributors@@</dc:title>
           </cc:Agent>
         </dc:contributor>
-        <cc:license rdf:resource="@@licence@@"/>
+        <cc:license rdf:resource="@@license@@"/>
       </cc:Work>
+    </rdf:RDF>
