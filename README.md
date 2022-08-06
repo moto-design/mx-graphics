@@ -90,8 +90,7 @@ Artwork ready to send out for printing.
 The result.
 
 ![rm250](readme-files/rm250.png)
-![rm250](readme-files/rm250-2.png)
-
+![rm250](readme-files/rm250-at-diablo.png)
 
 ## Licence & Usage
 
